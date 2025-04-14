@@ -8,10 +8,10 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, 'public')));
-// Configuración del motor de plantillas EJS
+
 app.set('view engine', 'ejs');
 app.set('views', './views');
-// Ruta principal
+
 app.get('/', (req, res) => {
     res.render('index',"css", {
         nombreCompleto: 'Henzo Breto Jesús Colmenares',
@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
         seccion: 'Sección 4'
     });
 });
-// Iniciar el servidor
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
