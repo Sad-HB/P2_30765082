@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 // Configuración del motor de plantillas EJS
+app.use(express.static(path.join(__dirname, 'views'))); 
 app.set('view engine', 'ejs');
 app.set('views', './views');
 // Ruta principal
