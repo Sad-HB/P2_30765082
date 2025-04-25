@@ -13,7 +13,6 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 // Configuración para servir archivos estáticos
-app.use(express_1.default.static(path.join(__dirname, '../views')));
 
 // Ruta principal
 app.get('/', (req, res) => {
