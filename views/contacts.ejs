@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactos Registrados</title>
+    <link rel="stylesheet" href="/views/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Contactos Registrados</h1>
+    </header>
+
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Comentario</th>
+                    <th>IP</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% contacts.forEach(contact => { %>
+                    <tr>
+                        <td><%= contact.id %></td>
+                        <td><%= contact.name %></td>
+                        <td><%= contact.email %></td>
+                        <td><%= contact.comment %></td>
+                        <td><%= contact.ip %></td>
+                        <td><%= contact.timestamp %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Alquiler de Bicicletas Eléctricas y Scooters Urbanos. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
