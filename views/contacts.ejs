@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contactos Registrados</title>
-    <link rel="stylesheet" href="/views/styles.css">
 </head>
 <body>
     <header>
@@ -21,6 +20,7 @@
                     <th>Comentario</th>
                     <th>IP</th>
                     <th>Fecha</th>
+                    <th>Hora</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,7 +31,8 @@
                         <td><%= contact.email %></td>
                         <td><%= contact.comment %></td>
                         <td><%= contact.ip %></td>
-                        <td><%= contact.timestamp %></td>
+                        <td><%= new Date(contact.timestamp).toLocaleDateString() %></td>
+                        <td><%= new Date(contact.timestamp).toLocaleTimeString() %></td>
                     </tr>
                 <% }) %>
             </tbody>
