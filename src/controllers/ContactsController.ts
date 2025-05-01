@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { ContactsModel } from '../models/ContactsModel';
 import { validationResult } from 'express-validator';
+import fs from 'fs';
+import path from 'path';
 
 export class ContactsController {
   static async add(req: Request, res: Response) {
@@ -13,8 +15,16 @@ export class ContactsController {
       const { email, name, comment } = req.body;
       const ip = req.ip || 'unknown';
       const timestamp = new Date().toISOString();
+      const dataToSave = { email, name, comment, ip, timestamp };
 
-      await ContactsModel.saveContact({ email, name, comment, ip, timestamp });
+      // Save contact to the database
+      await ContactsModel.saveContact(dataToSave);
+
+      // Append contact data to the 'add' file
+      const addFilePath = path.join(__dirname, '/contact/add');
+      const contactData = `Email: ${email}, Name: ${name}, Comment: ${comment}, IP: ${ip}, Timestamp: ${timestamp}\n`;
+      fs.appendFileSync(addFilePath, contactData);
+
       res.status(200).send('Contact added successfully');
     } catch (error) {
       res.status(500).send('Error saving contact');
