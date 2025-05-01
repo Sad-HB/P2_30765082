@@ -19,7 +19,7 @@ app.post('/contact/add', ContactsController.add);
 app.get('/admin/contacts', ContactsController.index);
 
 // Route for payment form
-app.post('/payment/add', PaymentsController.add);
+app.post('/payment/add', PaymentsController.validatePayment(), PaymentsController.add);
 
 app.get('/', (req, res) => {
   res.render('index', {

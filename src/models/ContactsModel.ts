@@ -27,4 +27,11 @@ export class ContactsModel {
     await db.close();
     return contacts;
   }
+
+  static async listTables() {
+    const db = await this.getDbConnection();
+    const tables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
+    await db.close();
+    return tables;
+  }
 }
