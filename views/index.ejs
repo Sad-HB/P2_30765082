@@ -236,13 +236,13 @@ form textarea {
 <script>
     
     document.querySelector('#contact-form form').addEventListener('submit', function (event) {
-        event.preventDefault(); mensaje
-        const confirmationMessage = document.getElementById('contact-confirmation-message');
-        confirmationMessage.style.display = 'block'; 
-        setTimeout(() => {
-            this.submit(); 
-        }, 2000); 
-    });
+    event.preventDefault(); 
+    const confirmationMessage = document.getElementById('contact-confirmation-message');
+    confirmationMessage.style.display = 'block'; 
+    setTimeout(() => {
+        this.submit(); 
+    }, 2000); 
+});
 
    
     document.querySelector('#payment-form form').addEventListener('submit', function (event) {
