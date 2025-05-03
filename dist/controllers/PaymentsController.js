@@ -15,7 +15,7 @@ class PaymentsController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { email, cardholderName, cardNumber, expirationMonth, expirationYear, cvv, amount, currency } = req.body;
-                // For now, just log the payment details (excluding sensitive data like card number and CVV)
+                
                 console.log('Payment received:', {
                     email,
                     cardholderName,

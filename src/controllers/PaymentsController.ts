@@ -21,7 +21,7 @@ export class PaymentsController {
 
       const { email, cardholderName, amount, currency } = req.body;
 
-      // Log only non-sensitive data
+    
       console.log('Payment received:', { email, cardholderName, amount, currency });
 
       res.status(200).send('Pago realizado');

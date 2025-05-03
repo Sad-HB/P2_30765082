@@ -17,10 +17,10 @@ export class ContactsController {
       const timestamp = new Date().toISOString();
       const dataToSave = { email, name, comment, ip, timestamp };
 
-      // Save contact to the database
+      
       await ContactsModel.saveContact(dataToSave);
 
-      // Append contact data to the 'add' file
+     
       const addFilePath = path.join(__dirname, '/contact/add');
       const contactData = `Email: ${email}, Name: ${name}, Comment: ${comment}, IP: ${ip}, Timestamp: ${timestamp}\n`;
       fs.appendFileSync(addFilePath, contactData);
