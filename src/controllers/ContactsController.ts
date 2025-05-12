@@ -3,6 +3,7 @@ import { ContactsModel } from '../models/ContactsModel';
 import { validationResult } from 'express-validator';
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
 
 export class ContactsController {
   static async add(req: Request, res: Response) {
@@ -15,12 +16,23 @@ export class ContactsController {
       const { email, name, comment } = req.body;
       const ip = req.ip || 'unknown';
       const timestamp = new Date().toISOString();
-      const dataToSave = { email, name, comment, ip, timestamp };
 
-      
+      // Fetch country using ipstack API
+      let country = 'unknown';
+      try {
+        const apiKey = '131395763755075415d53862f3ab8ae7'; 
+        const response = await axios.get(`http://api.ipstack.com/${ip}?access_key=${apiKey}`);
+        if (typeof response.data === 'object' && response.data !== null) {
+          country = (response.data as { country_name?: string }).country_name || 'unknown';
+        }
+      } catch (error) {
+        console.error('Error fetching geolocation data:', error);
+      }
+
+      const dataToSave = { email, name, comment, ip, timestamp, country };
+
       await ContactsModel.saveContact(dataToSave);
 
-     
       const addFilePath = path.join(__dirname, '/contact/add');
       const contactData = `Email: ${email}, Name: ${name}, Comment: ${comment}, IP: ${ip}, Timestamp: ${timestamp}\n`;
       fs.appendFileSync(addFilePath, contactData);

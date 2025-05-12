@@ -9,14 +9,14 @@ export class ContactsModel {
     });
   }
 
-  static async saveContact(contact: { email: string; name: string; comment: string; ip: string; timestamp: string }) {
+  static async saveContact(contact: { email: string; name: string; comment: string; ip: string; timestamp: string; country: string }) {
     const db = await this.getDbConnection();
     await db.run(
-      'CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY, email TEXT, name TEXT, comment TEXT, ip TEXT, timestamp TEXT)'
+      'CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY, email TEXT, name TEXT, comment TEXT, ip TEXT, timestamp TEXT, country TEXT)'
     );
     await db.run(
-      'INSERT INTO contacts (email, name, comment, ip, timestamp) VALUES (?, ?, ?, ?, ?)',
-      contact.email, contact.name, contact.comment, contact.ip, contact.timestamp
+      'INSERT INTO contacts (email, name, comment, ip, timestamp, country) VALUES (?, ?, ?, ?, ?, ?)',
+      contact.email, contact.name, contact.comment, contact.ip, contact.timestamp, contact.country
     );
     await db.close();
   }
