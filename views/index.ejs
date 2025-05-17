@@ -17,6 +17,7 @@
                 <li><a href="#contact-form">Contacto</a></li>
                 <li><a href="#payment-form">Pago</a></li>
                 <li><a href="#contacto">Redes Sociales</a></li>
+                <li><a href="#contact-list">Lista de Contactos</a></li>
             </ul>
         </nav>
     </header>
@@ -196,10 +197,6 @@ h2 {
     padding-bottom: 5px;
 }
 
-ul {
-    padding-left: 20px;
-}
-
 footer {
     text-align: center;
     padding: 10px 0;
@@ -209,13 +206,6 @@ footer {
     bottom: 0;
     width: 100%;
 }
-
-img {
-    max-width: 100%;
-    height: auto;
-    display: inline-block;
-    margin: 10px auto;
-} 
 
 form input, form textarea, form select {
     width: 40%;
@@ -335,7 +325,7 @@ form textarea {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-    white-space: nowrap; /* Evitar que el texto se corte */
+    white-space: nowrap; 
 }
 
 #contact-preview th {
@@ -352,14 +342,64 @@ form textarea {
     background-color: #ddd;
 }
 
-
-@media (max-width: 768px) {
-    #contact-preview table {
-        font-size: 14px; 
+/* Mejoro el estilo de la tabla de contactos para mayor organización y comodidad visual */
+#contact-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+#contact-list th, #contact-list td {
+    border: 1px solid #e0e0e0;
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 16px;
+}
+#contact-list th {
+    background-color: #007BFF;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+#contact-list tbody tr:nth-child(even) {
+    background-color: #f8faff;
+}
+#contact-list tbody tr:nth-child(odd) {
+    background-color: #f4f4f4;
+}
+#contact-list tbody tr:hover {
+    background-color: #e3f0ff;
+    transition: background 0.2s;
+}
+#contact-list td {
+    vertical-align: middle;
+}
+@media (max-width: 900px) {
+    #contact-list table, #contact-list thead, #contact-list tbody, #contact-list th, #contact-list td, #contact-list tr {
+        display: block;
     }
-
-    #contact-preview th, #contact-preview td {
-        padding: 6px; 
+    #contact-list thead tr {
+        display: none;
+    }
+    #contact-list td {
+        position: relative;
+        padding-left: 50%;
+        min-height: 40px;
+        border: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    #contact-list td:before {
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #007BFF;
+        content: attr(data-label);
     }
 }
 </style>
@@ -367,13 +407,31 @@ form textarea {
 <script>
 let contactIdCounter = 1; 
 
-document.querySelector('#contact-form form').addEventListener('submit', function (event) {
+// Mostrar mensaje de confirmación debajo del formulario de contacto
+const contactForm = document.querySelector('#contact-form form');
+contactForm.addEventListener('submit', async function (event) {
     event.preventDefault(); 
     const confirmationMessage = document.getElementById('contact-confirmation-message');
-    confirmationMessage.style.display = 'block'; 
-    setTimeout(() => {
-        this.submit(); 
-    }, 2000); 
+    confirmationMessage.style.display = 'none';
+    try {
+        const formData = new FormData(contactForm);
+        const response = await fetch('/contact/add', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+            confirmationMessage.innerHTML = '<p style="font-size: 18px; color: #007BFF;">¡Formulario de contacto enviado correctamente!</p>';
+            confirmationMessage.style.display = 'block';
+            contactForm.reset();
+        } else {
+            confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">' + (result.message || 'Error al enviar el formulario') + '</p>';
+            confirmationMessage.style.display = 'block';
+        }
+    } catch (error) {
+        confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">Error al enviar el formulario</p>';
+        confirmationMessage.style.display = 'block';
+    }
 });
 
 document.querySelector('#payment-form form').addEventListener('submit', function (event) {
@@ -410,6 +468,22 @@ function showContactPreview(event) {
 
     document.getElementById('contact-preview').style.display = 'block';
 }
+
+// Formatear la fecha y hora de la tabla de contactos a un formato legible
+window.addEventListener('DOMContentLoaded', function () {
+    const dateCells = document.querySelectorAll('#contact-list tbody tr td:nth-child(6)');
+    dateCells.forEach(cell => {
+        const raw = cell.textContent;
+        if (!raw || raw === 'Fecha y Hora') return;
+        // Intenta parsear la fecha
+        const date = new Date(raw);
+        if (!isNaN(date.getTime())) {
+            // Formato: 17 de mayo de 2025, 14:35
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            cell.textContent = date.toLocaleString('es-ES', options);
+        }
+    });
+});
 </script>
 
 </body>

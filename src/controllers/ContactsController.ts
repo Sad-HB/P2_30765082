@@ -12,10 +12,10 @@ export class ContactsController {
       }
 
       const { email, name, comment } = req.body;
-      const ip = req.ip && req.ip !== '::1' ? req.ip : '8.8.8.8'; // Use a default IP for local testing
+      const ip = req.ip && req.ip !== '::1' ? req.ip : '8.8.8.8'; 
       const timestamp = new Date().toISOString();
 
-      // Fetch country using ipstack API
+    
       let country = 'unknown';
       try {
         const response = await axios.get(`http://api.ipstack.com/${ip}?access_key=131395763755075415d53862f3ab8ae7`);

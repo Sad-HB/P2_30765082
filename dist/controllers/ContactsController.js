@@ -15,8 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContactsController = void 0;
 const ContactsModel_1 = require("../models/ContactsModel");
 const express_validator_1 = require("express-validator");
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 const axios_1 = __importDefault(require("axios"));
 class ContactsController {
     static add(req, res) {
@@ -27,9 +25,8 @@ class ContactsController {
                     return res.status(400).json({ errors: errors.array() });
                 }
                 const { email, name, comment } = req.body;
-                const ip = req.ip && req.ip !== '::1' ? req.ip : '8.8.8.8'; // Use a default IP for local testing
+                const ip = req.ip && req.ip !== '::1' ? req.ip : '8.8.8.8';
                 const timestamp = new Date().toISOString();
-                // Fetch country using ipstack API
                 let country = 'unknown';
                 try {
                     const response = yield axios_1.default.get(`http://api.ipstack.com/${ip}?access_key=131395763755075415d53862f3ab8ae7`);
@@ -45,13 +42,11 @@ class ContactsController {
                 }
                 const dataToSave = { email, name, comment, ip, timestamp, country };
                 yield ContactsModel_1.ContactsModel.saveContact(dataToSave);
-                const addFilePath = path_1.default.join(__dirname, '/contact/add');
-                const contactData = `Email: ${email}, Name: ${name}, Comment: ${comment}, IP: ${ip}, Timestamp: ${timestamp}\n`;
-                fs_1.default.appendFileSync(addFilePath, contactData);
-                res.status(200).send('Contact added successfully');
+                res.status(200).json({ success: true, message: 'Contact added successfully' });
             }
             catch (error) {
-                res.status(500).send('Error saving contact');
+                console.error('Error in add:', error);
+                res.status(500).json({ success: false, message: 'Error saving contact', error });
             }
         });
     }
