@@ -51,35 +51,7 @@
             <button type="submit" class="glow-on-hover">Enviar</button>
         </form>
 
-        <div id="contact-preview" style="display: none; margin-top: 20px;">
-            <h3>contactos agregados</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Correo Electrónico</th>
-                        <th>Nombre</th>
-                        <th>Comentario</th>
-                        <th>IP</th>
-                        <th>Hora de Ingreso</th>
-                        <th>País</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td id="preview-id"></td>
-                        <td id="preview-email"></td>
-                        <td id="preview-name"></td>
-                        <td id="preview-comment"></td>
-                        <td id="preview-ip"></td>
-                        <td id="preview-timestamp"></td>
-                        <td id="contact-country"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
+     
     <div id="contact-confirmation-message" style="display: none; text-align: center; margin-top: 20px;">
         <p style="font-size: 18px; color: #007BFF;">¡Formulario de contacto enviado correctamente!</p>
     </div>
@@ -130,6 +102,43 @@
         <a href="https://www.facebook.com/ehenzo.bretpo" target="_blank">Facebook</a>
         <a href="https://twitter.com" target="_blank">Twitter</a>
         <a href="https://www.instagram.com/sad_h.b?igsh=YzljYTk1ODg3Zg==" target="_blank">Instagram</a>
+    </section>
+
+    <section id="contact-list">
+        <h2>Contactos Registrados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Correo Electrónico</th>
+                    <th>Nombres</th>
+                    <th>Comentario</th>
+                    <th>IP</th>
+                    <th>Fecha y Hora</th>
+                    <th>País</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% var contacts = typeof contacts !== 'undefined' ? contacts : []; %>
+                <% if (contacts && contacts.length > 0) { %>
+                    <% contacts.forEach(contact => { %>
+                        <tr>
+                            <td><%= contact.id %></td>
+                            <td><%= contact.email %></td>
+                            <td><%= contact.name %></td>
+                            <td><%= contact.comment %></td>
+                            <td><%= contact.ip %></td>
+                            <td><%= contact.timestamp %></td>
+                            <td><%= contact.country %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="7">No hay contactos registrados.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
     </section>
     
     <footer>

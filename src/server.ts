@@ -20,13 +20,7 @@ app.get('/admin/contacts', ContactsController.index);
 
 app.post('/payment/add', PaymentsController.validatePayment(), PaymentsController.add);
 
-app.get('/', (req, res) => {
-  res.render('index', {
-    nombreCompleto: 'Henzo Breto Jesús Colmenares',
-    cedula: 'C.I. 30765082',
-    seccion: 'Sección 4'
-  });
-});
+app.get('/', ContactsController.index);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

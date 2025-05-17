@@ -10,20 +10,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentsController = void 0;
+const express_validator_1 = require("express-validator");
 class PaymentsController {
+    static validatePayment() {
+        return [
+            (0, express_validator_1.body)('cardNumber')
+                .matches(/^\d+$/)
+                .withMessage('El número de tarjeta debe contener solo números y no puede incluir letras.')
+                .isLength({ min: 13, max: 19 })
+                .withMessage('El número de tarjeta debe tener entre 13 y 19 dígitos.')
+        ];
+    }
     static add(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { email, cardholderName, cardNumber, expirationMonth, expirationYear, cvv, amount, currency } = req.body;
-                
-                console.log('Payment received:', {
-                    email,
-                    cardholderName,
-                    amount,
-                    currency,
-                    expirationMonth,
-                    expirationYear
-                });
+                const errors = (0, express_validator_1.validationResult)(req);
+                if (!errors.isEmpty()) {
+                    return res.status(400).json({ errors: errors.array() });
+                }
+                const { email, cardholderName, amount, currency } = req.body;
+                console.log('Payment received:', { email, cardholderName, amount, currency });
                 res.status(200).send('Pago realizado');
             }
             catch (error) {

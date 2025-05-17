@@ -21,7 +21,16 @@ export class ContactsModel {
     await db.close();
   }
 
+  static async ensureTableExists() {
+    const db = await this.getDbConnection();
+    await db.run(
+      'CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY, email TEXT, name TEXT, comment TEXT, ip TEXT, timestamp TEXT, country TEXT)'
+    );
+    await db.close();
+  }
+
   static async getAllContacts() {
+    await this.ensureTableExists();
     const db = await this.getDbConnection();
     const contacts = await db.all('SELECT * FROM contacts');
     await db.close();

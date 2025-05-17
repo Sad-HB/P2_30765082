@@ -27,17 +27,33 @@ class ContactsModel {
     static saveContact(contact) {
         return __awaiter(this, void 0, void 0, function* () {
             const db = yield this.getDbConnection();
-            yield db.run('CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY, email TEXT, name TEXT, comment TEXT, ip TEXT, timestamp TEXT)');
-            yield db.run('INSERT INTO contacts (email, name, comment, ip, timestamp) VALUES (?, ?, ?, ?, ?)', contact.email, contact.name, contact.comment, contact.ip, contact.timestamp);
+            yield db.run('CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY, email TEXT, name TEXT, comment TEXT, ip TEXT, timestamp TEXT, country TEXT)');
+            yield db.run('INSERT INTO contacts (email, name, comment, ip, timestamp, country) VALUES (?, ?, ?, ?, ?, ?)', contact.email, contact.name, contact.comment, contact.ip, contact.timestamp, contact.country);
+            yield db.close();
+        });
+    }
+    static ensureTableExists() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const db = yield this.getDbConnection();
+            yield db.run('CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY, email TEXT, name TEXT, comment TEXT, ip TEXT, timestamp TEXT, country TEXT)');
             yield db.close();
         });
     }
     static getAllContacts() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.ensureTableExists();
             const db = yield this.getDbConnection();
             const contacts = yield db.all('SELECT * FROM contacts');
             yield db.close();
             return contacts;
+        });
+    }
+    static listTables() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const db = yield this.getDbConnection();
+            const tables = yield db.all("SELECT name FROM sqlite_master WHERE type='table'");
+            yield db.close();
+            return tables;
         });
     }
 }

@@ -12,24 +12,12 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path_1.default.join(__dirname, '../views'));
-
-
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
-
-
 app.post('/contact/add', ContactsController_1.ContactsController.add);
 app.get('/admin/contacts', ContactsController_1.ContactsController.index);
-
-
-app.post('/payment/add', PaymentsController_1.PaymentsController.add);
-app.get('/', (req, res) => {
-    res.render('index', {
-        nombreCompleto: 'Henzo Breto Jesús Colmenares',
-        cedula: 'C.I. 30765082',
-        seccion: 'Sección 4'
-    });
-});
+app.post('/payment/add', PaymentsController_1.PaymentsController.validatePayment(), PaymentsController_1.PaymentsController.add);
+app.get('/', ContactsController_1.ContactsController.index);
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
