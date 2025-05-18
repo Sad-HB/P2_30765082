@@ -414,10 +414,19 @@ contactForm.addEventListener('submit', async function (event) {
     const confirmationMessage = document.getElementById('contact-confirmation-message');
     confirmationMessage.style.display = 'none';
     try {
-        const formData = new FormData(contactForm);
+        // Enviar como application/x-www-form-urlencoded para que el backend reciba los datos correctamente
+        const formData = new URLSearchParams();
+        formData.append('email', contactForm.email.value);
+        formData.append('name', contactForm.name.value);
+        formData.append('comment', contactForm.comment.value);
+        // DEBUG: Mostrar los valores enviados
+        for (let [key, value] of formData.entries()) {
+            console.log('FORMDATA', key, value);
+        }
         const response = await fetch('/contact/add', {
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
         });
         const result = await response.json();
         if (result.success) {
