@@ -495,25 +495,16 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+
+ 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T4W09XMGDV"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-  // Ejemplo de evento personalizado para rastrear envíos de formulario de contacto
-  document.addEventListener('DOMContentLoaded', function() {
-    const contactForm = document.querySelector('#contact-form form');
-    if (contactForm) {
-      contactForm.addEventListener('submit', function() {
-        gtag('event', 'submit', {
-          'event_category': 'Contacto',
-          'event_label': 'Formulario de Contacto'
-        });
-      });
-    }
-  });
+
+  gtag('config', 'G-T4W09XMGDV');
 </script>
 <!-- Fin Google Analytics -->
 
