@@ -12,7 +12,19 @@ export class ContactsController {
       }
 
       const { email, name, comment } = req.body;
-      const ip = req.ip && req.ip !== '::1' ? req.ip : '8.8.8.8'; 
+      // Obtener la IP real del usuario considerando proxies
+      let ip = req.headers['x-forwarded-for'] as string | undefined;
+      if (ip) {
+        ip = ip.split(',')[0].trim();
+      } else if (req.connection && req.connection.remoteAddress) {
+        ip = req.connection.remoteAddress;
+      } else if (req.socket && req.socket.remoteAddress) {
+        ip = req.socket.remoteAddress;
+      } else {
+        ip = req.ip;
+      }
+      // Si sigue siendo localhost, usar una IP pública de ejemplo para pruebas
+      if (!ip || ip === '::1' || ip === '127.0.0.1') ip = '8.8.8.8';
       const timestamp = new Date().toISOString();
     
       let country = 'unknown';
