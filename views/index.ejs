@@ -414,12 +414,22 @@ contactForm.addEventListener('submit', async function (event) {
     event.preventDefault(); 
     const confirmationMessage = document.getElementById('contact-confirmation-message');
     confirmationMessage.style.display = 'none';
+
+    // Validar reCAPTCHA antes de enviar
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">Por favor, confirma el reCAPTCHA antes de enviar el formulario.</p>';
+        confirmationMessage.style.display = 'block';
+        return;
+    }
+
     try {
         // Enviar como application/x-www-form-urlencoded para que el backend reciba los datos correctamente
         const formData = new URLSearchParams();
         formData.append('email', contactForm.email.value);
         formData.append('name', contactForm.name.value);
         formData.append('comment', contactForm.comment.value);
+        formData.append('g-recaptcha-response', recaptchaResponse);
         // DEBUG: Mostrar los valores enviados
         for (let [key, value] of formData.entries()) {
             console.log('FORMDATA', key, value);
@@ -434,6 +444,7 @@ contactForm.addEventListener('submit', async function (event) {
             confirmationMessage.innerHTML = '<p style="font-size: 18px; color: #007BFF;">¡Formulario de contacto enviado correctamente!</p>';
             confirmationMessage.style.display = 'block';
             contactForm.reset();
+            grecaptcha.reset(); // Reiniciar reCAPTCHA tras éxito
         } else {
             confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">' + (result.message || 'Error al enviar el formulario') + '</p>';
             confirmationMessage.style.display = 'block';
