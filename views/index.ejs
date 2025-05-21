@@ -39,7 +39,7 @@
 
     <section id="contact-form">
         <h2>Formulario de Contacto</h2>
-        <form action="/contact/add" method="POST" onsubmit="showContactPreview(event)">
+        <form action="/contact/add" method="POST">
             <label for="email">Correo Electrónico:</label>
             <input type="email" id="email" name="email" required>
 
@@ -49,6 +49,7 @@
             <label for="comment">Comentario:</label>
             <textarea id="comment" name="comment"></textarea>
 
+            <div class="g-recaptcha" data-sitekey="6LdKAUQrAAAAADDN8ugquX7lkGAa8W4StSiVYB8H"></div>
             <button type="submit" class="glow-on-hover">Enviar</button>
         </form>
 
@@ -508,5 +509,7 @@ window.addEventListener('DOMContentLoaded', function () {
 </script>
 <!-- Fin Google Analytics -->
 
+<!-- Google reCAPTCHA v2 -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </body>
 </html>

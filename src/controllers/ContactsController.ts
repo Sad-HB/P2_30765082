@@ -27,6 +27,19 @@ export class ContactsController {
         console.error('Error fetching geolocation data:', error);
       }
 
+      // Validar Google reCAPTCHA antes de guardar el contacto
+      const recaptchaSecret = '6LdKAUQrAAAAAGMSLpffLyiG78i7sfqNI8K34yhr';
+      const recaptchaResponse = req.body['g-recaptcha-response'];
+      if (!recaptchaResponse) {
+        return res.status(400).json({ success: false, message: 'Por favor, verifica el reCAPTCHA.' });
+      }
+      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${recaptchaResponse}`;
+      const recaptchaVerify = await axios.post(verifyUrl);
+      const recaptchaData = recaptchaVerify.data as { success: boolean };
+      if (!recaptchaData.success) {
+        return res.status(400).json({ success: false, message: 'Falló la verificación de reCAPTCHA.' });
+      }
+
       const dataToSave = { email, name, comment, ip, timestamp, country };
 
       await ContactsModel.saveContact(dataToSave);
