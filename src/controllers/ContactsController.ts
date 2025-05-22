@@ -23,8 +23,15 @@ export class ContactsController {
       } else {
         ip = req.ip;
       }
-      // Si sigue siendo localhost, usar una IP pública de ejemplo para pruebas
-      if (!ip || ip === '::1' || ip === '127.0.0.1') ip = '8.8.8.8';
+      // Si sigue siendo localhost o una IP privada, usar una IP pública de ejemplo para pruebas
+      const localIps = ['::1', '127.0.0.1', '::ffff:127.0.0.1'];
+      const ipStr = ip || '';
+      const privateRanges = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./];
+      if (!ipStr || localIps.includes(ipStr) || privateRanges.some(r => r.test(ipStr))) {
+        ip = '8.8.8.8';
+      } else {
+        ip = ipStr;
+      }
       const timestamp = new Date().toISOString();
     
       let country = 'unknown';
