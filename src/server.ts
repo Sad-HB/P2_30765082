@@ -10,10 +10,10 @@ const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
+app.set('trust proxy', true);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 app.post('/contact/add', ContactsController.add);
 app.get('/admin/contacts', ContactsController.index);
