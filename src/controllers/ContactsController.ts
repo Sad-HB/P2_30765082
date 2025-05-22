@@ -12,28 +12,29 @@ export class ContactsController {
       }
 
       const { email, name, comment } = req.body;
-      // Obtener la IP real del usuario considerando proxies
-      let ip = req.headers['x-forwarded-for'] as string | undefined;
-      if (ip) {
-        ip = ip.split(',')[0].trim();
+      // Obtener la IP real del usuario considerando proxies y evitar IPs locales/privadas
+      let realIp = req.headers['x-forwarded-for'] as string | undefined;
+      if (realIp) {
+        realIp = realIp.split(',')[0].trim();
       } else if (req.connection && req.connection.remoteAddress) {
-        ip = req.connection.remoteAddress;
+        realIp = req.connection.remoteAddress;
       } else if (req.socket && req.socket.remoteAddress) {
-        ip = req.socket.remoteAddress;
+        realIp = req.socket.remoteAddress;
       } else {
-        ip = req.ip;
+        realIp = req.ip;
       }
-      // Si sigue siendo localhost o una IP privada, usar una IP pública de ejemplo para pruebas
+      // Detectar IP local o privada y rechazar el registro si es así
       const localIps = ['::1', '127.0.0.1', '::ffff:127.0.0.1'];
-      const ipStr = ip || '';
+      const ipStr = realIp || '';
       const privateRanges = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./];
       if (!ipStr || localIps.includes(ipStr) || privateRanges.some(r => r.test(ipStr))) {
-        ip = '8.8.8.8';
-      } else {
-        ip = ipStr;
+        return res.status(400).json({ success: false, message: 'No se permite registrar desde una IP local o privada.' });
       }
+      const ip = ipStr;
       const timestamp = new Date().toISOString();
-    
+
+      // Verificar si ya existe un registro con la misma IP y país
+      const contacts = await ContactsModel.getAllContacts();
       let country = 'unknown';
       try {
         const response = await axios.get(`http://api.ipstack.com/${ip}?access_key=131395763755075415d53862f3ab8ae7`);
@@ -44,6 +45,10 @@ export class ContactsController {
         }
       } catch (error) {
         console.error('Error fetching geolocation data:', error);
+      }
+      // Si ya existe un registro con la misma IP y país, rechazar
+      if (contacts.some(c => c.ip === ip && c.country === country)) {
+        return res.status(400).json({ success: false, message: 'Ya existe un registro con esta IP y país.' });
       }
 
       // Validar Google reCAPTCHA antes de guardar el contacto
