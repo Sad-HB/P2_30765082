@@ -28,7 +28,7 @@ export class ContactsController {
       const ipStr = realIp || '';
       const privateRanges = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./];
       if (!ipStr || localIps.includes(ipStr) || privateRanges.some(r => r.test(ipStr))) {
-        return res.status(400).json({ success: false, message: 'No se permite registrar desde una IP local o privada.' });
+        return res.status(400).json({ success: false, message: 'No se permite registrar desde una IP local o privada. Su IP detectada es: ' + ipStr });
       }
       const ip = ipStr;
       const timestamp = new Date().toISOString();
