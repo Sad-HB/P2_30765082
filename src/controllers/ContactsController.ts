@@ -12,7 +12,7 @@ export class ContactsController {
       }
 
       const { email, name, comment } = req.body;
-      const ip = req.ip && req.ip !== '::1' ? req.ip : '8.8.8.8'; 
+      const ip = req.ip && req.ip !== '::1' ? req.ip : '?.?.?.?'; 
       const timestamp = new Date().toISOString();
     
       let country = 'unknown';
