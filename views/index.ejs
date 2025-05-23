@@ -125,13 +125,13 @@
                 <% if (contacts && contacts.length > 0) { %>
                     <% contacts.forEach(contact => { %>
                         <tr>
-                            <td><%= contact.id %></td>
-                            <td><%= contact.email %></td>
-                            <td><%= contact.name %></td>
-                            <td><%= contact.comment %></td>
-                            <td><%= contact.ip %></td>
-                            <td><%= contact.timestamp %></td>
-                            <td><%= contact.country %></td>
+                            <td data-label="ID"><%= contact.id %></td>
+                            <td data-label="Correo Electrónico"><%= contact.email %></td>
+                            <td data-label="Nombres"><%= contact.name %></td>
+                            <td data-label="Comentario"><%= contact.comment %></td>
+                            <td data-label="IP"><%= contact.ip %></td>
+                            <td data-label="Fecha y Hora"><%= contact.timestamp %></td>
+                            <td data-label="País"><%= contact.country %></td>
                         </tr>
                     <% }); %>
                 <% } else { %>
@@ -352,12 +352,14 @@ form textarea {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    table-layout: auto;
 }
 #contact-list th, #contact-list td {
     border: 1px solid #e0e0e0;
     padding: 12px 10px;
     text-align: left;
     font-size: 16px;
+    word-break: break-word;
 }
 #contact-list th {
     background-color: #007BFF;
@@ -391,6 +393,7 @@ form textarea {
         min-height: 40px;
         border: none;
         border-bottom: 1px solid #e0e0e0;
+        font-size: 15px;
     }
     #contact-list td:before {
         position: absolute;
@@ -401,6 +404,16 @@ form textarea {
         font-weight: bold;
         color: #007BFF;
         content: attr(data-label);
+    }
+    #contact-list table {
+        box-shadow: none;
+        border-radius: 0;
+    }
+}
+@media (max-width: 600px) {
+    #contact-list td {
+        font-size: 13px;
+        padding: 10px 5px 10px 45%;
     }
 }
 </style>
