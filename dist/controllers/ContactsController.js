@@ -25,7 +25,7 @@ class ContactsController {
                     return res.status(400).json({ errors: errors.array() });
                 }
                 const { email, name, comment } = req.body;
-                const ip = req.ip && req.ip !== '::1' ? req.ip : '8.8.8.8';
+                const ip = req.ip && req.ip !== '::1' ? req.ip : '?.?.?.?';
                 const timestamp = new Date().toISOString();
                 let country = 'unknown';
                 try {
