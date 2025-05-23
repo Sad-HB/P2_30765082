@@ -12,7 +12,25 @@ export class ContactsController {
       }
 
       const { email, name, comment } = req.body;
-      const ip = req.ip && req.ip !== '::1' ? req.ip : '?.?.?.?'; 
+      // Obtener la IP real del usuario considerando proxies y evitar IPs locales/privadas
+      let realIp = req.headers['x-forwarded-for'] as string | undefined;
+      if (realIp) {
+        realIp = realIp.split(',')[0].trim();
+      } else if (req.connection && req.connection.remoteAddress) {
+        realIp = req.connection.remoteAddress;
+      } else if (req.socket && req.socket.remoteAddress) {
+        realIp = req.socket.remoteAddress;
+      } else {
+        realIp = req.ip;
+      }
+      // Detectar IP local o privada y rechazar el registro si es así
+      const localIps = ['::1', '127.0.0.1', '::ffff:127.0.0.1'];
+      const ipStr = realIp || '';
+      const privateRanges = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./];
+      if (!ipStr || localIps.includes(ipStr) || privateRanges.some(r => r.test(ipStr))) {
+        return res.status(400).json({ success: false, message: 'No se permite registrar desde una IP local o privada. Su IP detectada es: ' + ipStr });
+      }
+      const ip = ipStr;
       const timestamp = new Date().toISOString();
     
       let country = 'unknown';
