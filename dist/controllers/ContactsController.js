@@ -16,6 +16,7 @@ exports.ContactsController = void 0;
 const ContactsModel_1 = require("../models/ContactsModel");
 const express_validator_1 = require("express-validator");
 const axios_1 = __importDefault(require("axios"));
+const nodemailer = require("nodemailer");
 class ContactsController {
     static add(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -60,6 +61,33 @@ class ContactsController {
                 }
                 const dataToSave = { email, name, comment, ip, timestamp, country };
                 yield ContactsModel_1.ContactsModel.saveContact(dataToSave);
+                // Configurar el transporte de Nodemailer
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'henzo30765082@gmail.com',
+                        pass: '30765082H.'
+                    }
+                });
+                const mailOptions = {
+                    from: 'henzo30765082@gmail.com',
+                    to: ['henzo30765082@gmail.com'],
+                    subject: 'Nuevo contacto recibido',
+                    html: `<h3>Nuevo contacto recibido</h3>
+                        <ul>
+                            <li><b>Nombre:</b> ${name}</li>
+                            <li><b>Correo:</b> ${email}</li>
+                            <li><b>Comentario:</b> ${comment}</li>
+                            <li><b>IP:</b> ${ip}</li>
+                            <li><b>País:</b> ${country}</li>
+                            <li><b>Fecha/Hora:</b> ${timestamp}</li>
+                        </ul>`
+                };
+                try {
+                    yield transporter.sendMail(mailOptions);
+                } catch (err) {
+                    console.error('Error enviando correo de notificación:', err);
+                }
                 res.status(200).json({ success: true, message: 'Contact added successfully' });
             }
             catch (error) {
