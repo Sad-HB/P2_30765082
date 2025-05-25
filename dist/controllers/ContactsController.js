@@ -66,7 +66,7 @@ class ContactsController {
                     service: 'gmail',
                     auth: {
                         user: 'henzo30765082@gmail.com',
-                        pass: '30765082H.'
+                        pass: 'ceeu ayfp ukyl ktza'
                     }
                 });
                 const mailOptions = {

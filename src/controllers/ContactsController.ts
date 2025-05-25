@@ -68,7 +68,7 @@ export class ContactsController {
         service: 'gmail', // Puedes cambiar a otro servicio si lo deseas
         auth: {
           user: 'henzo30765082@gmail.com', // Cambia por un correo real si usas Gmail real
-          pass: '30765082H.' // Cambia por la contraseña real o token de aplicación
+          pass: 'ceeu ayfp ukyl ktza' // Cambia por la contraseña real o token de aplicación
         }
       });
       const mailOptions = {
