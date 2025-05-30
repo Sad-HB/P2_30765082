@@ -24,6 +24,8 @@ export class PaymentsController {
 
       const { email, cardholderName, cardNumber, expiryMonth, expiryYear, cvv, amount, currency } = req.body;
 
+      console.log('REQ.BODY:', req.body);
+
       //FakePayment API (https://fakepayment.onrender.com/payments)
       const paymentPayload = {
         amount,
@@ -48,8 +50,14 @@ export class PaymentsController {
           }
         );
         const data = response.data as any;
-        if (data && (data.status === 'APROBADO' || data.status === 'aprobado' || data.status === 'success')) {
-          // solicitud
+        if (
+          (data && (data.status === 'APROBADO' || data.status === 'aprobado' || data.status === 'success')) ||
+          (data && data.success === true) ||
+          (data && data.message && (
+            data.message.trim().toLowerCase() === 'pago exitoso' ||
+            data.message.trim().toLowerCase() === 'payment successful'
+          ))
+        ) {
           return res.status(200).json({
             success: true,
             message: 'Pago exitoso',

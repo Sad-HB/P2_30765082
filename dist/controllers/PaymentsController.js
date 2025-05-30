@@ -55,8 +55,14 @@ class PaymentsController {
                         }
                     });
                     const data = response.data;
-                    if (data && (data.status === 'APROBADO' || data.status === 'aprobado' || data.status === 'success')) {
-                        // solicitud
+                    if (
+                        (data && (data.status === 'APROBADO' || data.status === 'aprobado' || data.status === 'success')) ||
+                        (data && data.success === true) ||
+                        (data && data.message && (
+                            data.message.trim().toLowerCase() === 'pago exitoso' ||
+                            data.message.trim().toLowerCase() === 'payment successful'
+                        ))
+                    ) {
                         return res.status(200).json({
                             success: true,
                             message: 'Pago exitoso',
