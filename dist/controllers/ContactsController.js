@@ -49,7 +49,7 @@ class ContactsController {
                 const timestamp = new Date().toISOString();
                 let country = 'unknown';
                 try {
-                    const response = yield axios_1.default.get(`http://api.ipstack.com/${ip}?access_key=131395763755075415d53862f3ab8ae7`);
+                    const response = yield axios_1.default.get(`http://api.ipstack.com/${ip}?access_key=a3a44a9f161c1733abc17610b9cbff83`);
                     if (typeof response.data === 'object' && response.data !== null && 'success' in response.data && response.data.success === false) {
                         console.error('IPStack API Error:', response.data.error);
                     }

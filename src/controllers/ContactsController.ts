@@ -34,7 +34,7 @@ export class ContactsController {
     
       let country = 'unknown';
       try {
-        const response = await axios.get(`http://api.ipstack.com/${ip}?access_key=131395763755075415d53862f3ab8ae7`);
+        const response = await axios.get(`http://api.ipstack.com/${ip}?access_key=a3a44a9f161c1733abc17610b9cbff83`);
         if (typeof response.data === 'object' && response.data !== null && 'success' in response.data && response.data.success === false) {
           console.error('IPStack API Error:', (response.data as { error?: string }).error);
         } else if (typeof response.data === 'object' && response.data !== null) {
