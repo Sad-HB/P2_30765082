@@ -61,7 +61,7 @@ class ContactsController {
                     console.error('Error fetching geolocation data:', error);
                 }
                 
-                const recaptchaSecret = '6LdKAUQrAAAAAGMSLpffLyiG78i7sfqNI8K34yhr';
+                const recaptchaSecret = process.env.RECAPTCHA_SECRET;
                 const recaptchaResponse = req.body['g-recaptcha-response'];
                 if (!recaptchaResponse) {
                     return res.status(400).json({ success: false, message: 'Por favor, verifica el reCAPTCHA.' });
