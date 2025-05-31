@@ -13,6 +13,14 @@ app.set('views', path.join(__dirname, '../views'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com; frame-src https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline';"
+  );
+  next();
+});
+
 app.post('/contact/add', ContactsController.add);
 app.get('/admin/contacts', ContactsController.index);
 
