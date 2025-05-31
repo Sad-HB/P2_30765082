@@ -427,7 +427,6 @@ contactForm.addEventListener('submit', async function (event) {
     const confirmationMessage = document.getElementById('contact-confirmation-message');
     confirmationMessage.style.display = 'none';
 
-    
     const recaptchaResponse = grecaptcha.getResponse();
     if (!recaptchaResponse) {
         confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">Por favor, confirma el reCAPTCHA antes de enviar el formulario.</p>';
