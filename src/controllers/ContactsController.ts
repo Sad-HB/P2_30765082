@@ -65,15 +65,15 @@ export class ContactsController {
 
       // Enviar notificación por correo electrónico
       const transporter = nodemailer.createTransport({
-        service: 'gmail', // Puedes cambiar a otro servicio si lo deseas
+        service: 'gmail',
         auth: {
-          user: 'henzo30765082@gmail.com', // Cambia por un correo real si usas Gmail real
-          pass: 'ceeu ayfp ukyl ktza' // Cambia por la contraseña real o token de aplicación
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS
         }
       });
       const mailOptions = {
-        from: 'henzo30765082@gmail.com',
-        to: ['henzo30765082@gmail.com'], // Puedes agregar más destinatarios separados por coma
+        from: process.env.MAIL_USER,
+        to: [process.env.MAIL_USER, 'programacion2ais@yopmail.com'].join(','), // Enviar a ambos destinatarios
         subject: 'Nuevo contacto recibido',
         html: `<h3>Nuevo contacto recibido</h3>
           <ul>
