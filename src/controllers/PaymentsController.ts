@@ -26,7 +26,6 @@ export class PaymentsController {
 
       console.log('REQ.BODY:', req.body);
 
-      //FakePayment API (https://fakepayment.onrender.com/payments)
       const paymentPayload = {
         amount,
         "card-number": cardNumber,

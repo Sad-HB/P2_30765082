@@ -13,7 +13,6 @@ export class ContactsController {
       }
 
       const { email, name, comment } = req.body;
-      // Obtener la IP real del usuario considerando proxies y evitar IPs locales/privadas
       let realIp = req.headers['x-forwarded-for'] as string | undefined;
       if (realIp) {
         realIp = realIp.split(',')[0].trim();
@@ -24,7 +23,6 @@ export class ContactsController {
       } else {
         realIp = req.ip;
       }
-      // Detectar IP local o privada y rechazar el registro si es así
       const localIps = ['::1', '127.0.0.1', '::ffff:127.0.0.1'];
       const ipStr = realIp || '';
       const privateRanges = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./];
@@ -46,7 +44,6 @@ export class ContactsController {
         console.error('Error fetching geolocation data:', error);
       }
 
-      // Validar Google reCAPTCHA antes de guardar el contacto
       const recaptchaSecret = '6LdKAUQrAAAAAGMSLpffLyiG78i7sfqNI8K34yhr';
       const recaptchaResponse = req.body['g-recaptcha-response'];
       if (!recaptchaResponse) {
@@ -63,7 +60,6 @@ export class ContactsController {
 
       await ContactsModel.saveContact(dataToSave);
 
-      // Enviar notificación por correo electrónico
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -73,7 +69,7 @@ export class ContactsController {
       });
       const mailOptions = {
         from: process.env.MAIL_USER,
-        to: [process.env.MAIL_USER, 'programacion2ais@yopmail.com'].join(','), // Enviar a ambos destinatarios
+        to: [process.env.MAIL_USER].join(','),
         subject: 'Nuevo contacto recibido',
         html: `<h3>Nuevo contacto recibido</h3>
           <ul>

@@ -26,7 +26,6 @@ class ContactsController {
                     return res.status(400).json({ errors: errors.array() });
                 }
                 const { email, name, comment } = req.body;
-                // Obtener la IP real del usuario considerando proxies y evitar IPs locales/privadas
                 let realIp = req.headers['x-forwarded-for'];
                 if (realIp) {
                     realIp = realIp.split(',')[0].trim();
@@ -40,7 +39,6 @@ class ContactsController {
                 else {
                     realIp = req.ip;
                 }
-                // Detectar IP local o privada y rechazar el registro si es así
                 const localIps = ['::1', '127.0.0.1', '::ffff:127.0.0.1'];
                 const ipStr = realIp || '';
                 const privateRanges = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./];
@@ -62,7 +60,7 @@ class ContactsController {
                 catch (error) {
                     console.error('Error fetching geolocation data:', error);
                 }
-                // Validar Google reCAPTCHA antes de guardar el contacto
+                
                 const recaptchaSecret = '6LdKAUQrAAAAAGMSLpffLyiG78i7sfqNI8K34yhr';
                 const recaptchaResponse = req.body['g-recaptcha-response'];
                 if (!recaptchaResponse) {
@@ -76,7 +74,7 @@ class ContactsController {
                 }
                 const dataToSave = { email, name, comment, ip, timestamp, country };
                 yield ContactsModel_1.ContactsModel.saveContact(dataToSave);
-                // Enviar notificación por correo electrónico
+                
                 const transporter = nodemailer_1.default.createTransport({
                     service: 'gmail',
                     auth: {
@@ -86,7 +84,7 @@ class ContactsController {
                 });
                 const mailOptions = {
                     from: process.env.MAIL_USER,
-                    to: [process.env.MAIL_USER, 'programacion2ais@yopmail.com'].join(','),
+                    to: [process.env.MAIL_USER].join(','),
                     subject: 'Nuevo contacto recibido',
                     html: `<h3>Nuevo contacto recibido</h3>
           <ul>

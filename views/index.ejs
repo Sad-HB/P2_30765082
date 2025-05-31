@@ -427,7 +427,7 @@ contactForm.addEventListener('submit', async function (event) {
     const confirmationMessage = document.getElementById('contact-confirmation-message');
     confirmationMessage.style.display = 'none';
 
-    // Validar reCAPTCHA antes de enviar
+    
     const recaptchaResponse = grecaptcha.getResponse();
     if (!recaptchaResponse) {
         confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">Por favor, confirma el reCAPTCHA antes de enviar el formulario.</p>';
@@ -436,13 +436,12 @@ contactForm.addEventListener('submit', async function (event) {
     }
 
     try {
-        // Enviar como application/x-www-form-urlencoded para que el backend reciba los datos correctamente
         const formData = new URLSearchParams();
         formData.append('email', contactForm.email.value);
         formData.append('name', contactForm.name.value);
         formData.append('comment', contactForm.comment.value);
         formData.append('g-recaptcha-response', recaptchaResponse);
-        // DEBUG: Mostrar los valores enviados
+     
         for (let [key, value] of formData.entries()) {
             console.log('FORMDATA', key, value);
         }
@@ -517,8 +516,6 @@ window.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
- 
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4W09XMGDV"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -527,9 +524,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
   gtag('config', 'G-T4W09XMGDV');
 </script>
-<!-- Fin Google Analytics -->
 
-<!-- Google reCAPTCHA v2 -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </body>
 </html>
