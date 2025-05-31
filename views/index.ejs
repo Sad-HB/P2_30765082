@@ -60,9 +60,9 @@
 
     <section id="payment-form">
         <h2>Formulario de Pago</h2>
-        <form action="/payment/add" method="POST">
+        <form id="paymentForm" action="/payment/add" method="POST">
             <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="paymentEmail" name="email" required>
 
             <label for="cardholderName">Nombre del Titular de la Tarjeta:</label>
             <input type="text" id="cardholderName" name="cardholderName" required>
@@ -91,12 +91,10 @@
 
             <button type="submit" class="glow-on-hover">Pagar</button>
         </form>
+        <div id="payment-message" style="display:none; margin: 25px auto 0 auto; max-width: 420px; padding: 18px 24px; border-radius: 12px; font-size: 18px; font-weight: 500; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.07);"></div>
     </section>
 
-    <div id="payment-confirmation-message" style="display: none; text-align: center; margin-top: 20px;">
-        <p style="font-size: 18px; color: #007BFF;">¡Su pago ha sido aceptado!</p>
-    </div>
-
+   
 
     <section id="contacto">
         <h2>Contáctanos</h2>
@@ -429,7 +427,7 @@ contactForm.addEventListener('submit', async function (event) {
 
     const recaptchaResponse = grecaptcha.getResponse();
     if (!recaptchaResponse) {
-        confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">Por favor, confirma el reCAPTCHA antes de enviar el formulario.</p>';
+        confirmationMessage.innerHTML = `<div style="background:#fff0f0;border:2px solid #dc3545;color:#b02a37;border-radius:10px;padding:18px 10px;line-height:1.5;font-size:18px;text-align:center;max-width:420px;margin:0 auto;">❌ <b>Por favor, confirma el reCAPTCHA antes de enviar el formulario.</b></div>`;
         confirmationMessage.style.display = 'block';
         return;
     }
@@ -440,7 +438,6 @@ contactForm.addEventListener('submit', async function (event) {
         formData.append('name', contactForm.name.value);
         formData.append('comment', contactForm.comment.value);
         formData.append('g-recaptcha-response', recaptchaResponse);
-     
         for (let [key, value] of formData.entries()) {
             console.log('FORMDATA', key, value);
         }
@@ -451,17 +448,66 @@ contactForm.addEventListener('submit', async function (event) {
         });
         const result = await response.json();
         if (result.success) {
-            confirmationMessage.innerHTML = '<p style="font-size: 18px; color: #007BFF;">¡Formulario de contacto enviado correctamente!</p>';
+            confirmationMessage.innerHTML = `<div style="background:#eafaf1;border:2px solid #28a745;color:#218838;border-radius:10px;padding:18px 10px;line-height:1.5;font-size:18px;text-align:center;max-width:420px;margin:0 auto;">✔️ <b>¡Formulario de contacto enviado correctamente!</b></div>`;
             confirmationMessage.style.display = 'block';
             contactForm.reset();
             grecaptcha.reset(); 
         } else {
-            confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">' + (result.message || 'Error al enviar el formulario') + '</p>';
+            confirmationMessage.innerHTML = `<div style="background:#fff0f0;border:2px solid #dc3545;color:#b02a37;border-radius:10px;padding:18px 10px;line-height:1.5;font-size:18px;text-align:center;max-width:420px;margin:0 auto;">❌ <b>${result.message || 'Error al enviar el formulario'}</b></div>`;
             confirmationMessage.style.display = 'block';
         }
     } catch (error) {
-        confirmationMessage.innerHTML = '<p style="font-size: 18px; color: red;">Error al enviar el formulario</p>';
+        confirmationMessage.innerHTML = `<div style="background:#fff0f0;border:2px solid #dc3545;color:#b02a37;border-radius:10px;padding:18px 10px;line-height:1.5;font-size:18px;text-align:center;max-width:420px;margin:0 auto;">❌ <b>Error al enviar el formulario</b></div>`;
         confirmationMessage.style.display = 'block';
+    }
+});
+
+// Payment form AJAX logic
+const paymentForm = document.getElementById('paymentForm');
+const paymentMessage = document.getElementById('payment-message');
+paymentForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    paymentMessage.style.display = 'none';
+    paymentMessage.innerHTML = '';
+    const formData = new URLSearchParams();
+    formData.append('email', paymentForm.email.value);
+    formData.append('cardholderName', paymentForm.cardholderName.value);
+    formData.append('cardNumber', paymentForm.cardNumber.value);
+    formData.append('expiryMonth', paymentForm.expiryMonth.value);
+    formData.append('expiryYear', paymentForm.expiryYear.value);
+    formData.append('cvv', paymentForm.cvv.value);
+    formData.append('amount', paymentForm.amount.value);
+    formData.append('currency', paymentForm.currency.value);
+    try {
+        const response = await fetch('/payment/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        });
+        const result = await response.json();
+        let bg = '#eafaf1';
+        let border = '#28a745';
+        let color = '#218838';
+        let icon = '✔️';
+        let msg = '';
+        if (result.success) {
+            msg = `${icon} <b>¡Su pago ha sido aceptado!</b>`;
+            if (result.data && result.data.transaction_id) {
+                msg += `<br><span style='font-size:15px;color:#555;'>ID Transacción: <b>${result.data.transaction_id}</b></span>`;
+            }
+        } else {
+            bg = '#fff0f0';
+            border = '#dc3545';
+            color = '#b02a37';
+            icon = '❌';
+            msg = `${icon} <b>${result.message || 'Pago rechazado o error desconocido.'}</b>`;
+        }
+        paymentMessage.innerHTML = `<div style="background:${bg};border:2px solid ${border};color:${color};border-radius:10px;padding:18px 10px;line-height:1.5;">${msg}</div>`;
+        paymentMessage.style.display = 'block';
+        if (result.success) paymentForm.reset();
+    } catch (error) {
+        paymentMessage.innerHTML = `<div style="background:#fff0f0;border:2px solid #dc3545;color:#b02a37;border-radius:10px;padding:18px 10px;line-height:1.5;">❌ <b>Error al procesar el pago. Intente nuevamente.</b></div>`;
+        paymentMessage.style.display = 'block';
     }
 });
 
