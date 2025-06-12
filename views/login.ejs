@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar Sesión</title>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+    <form action="/login" method="POST">
+      <label for="username">Usuario</label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit">Entrar</button>
+    </form>
+    <form action="/auth/google" method="GET" style="margin-top: 16px;">
+      <button type="submit" class="google-btn">
+        Iniciar con Google
+      </button>
+    </form>
+    <div class="register-link">
+      ¿No tienes cuenta? <a href="/register">Regístrate</a>
+    </div>
+  </div>
+</body>
+</html>
