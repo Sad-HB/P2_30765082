@@ -13,6 +13,8 @@ import { UsersModel } from './models/UsersModel';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import bcrypt from 'bcrypt';
+import { ContactsModel } from './models/ContactsModel';
+import { PaymentsModel } from './models/PaymentsModel';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -120,6 +122,14 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware para proteger rutas
+function ensureAuthenticated(req: any, res: any, next: any) {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
 // Rutas de contactos
 app.post('/contact/add', ContactsController.add);
 app.get('/admin/contacts', ContactsController.index);
@@ -145,4 +155,22 @@ app.get('/auth/google/callback',
     res.redirect('/');
   }
 );
+
+// Rutas protegidas para contactos y pagos
+app.get('/contacts', ensureAuthenticated, async (req, res) => {
+  const contacts = await ContactsModel.getAllContacts();
+  // Adaptar los datos para la vista
+  const contactsView = contacts.map((c: any) => ({
+    name: c.name,
+    email: c.email,
+    message: c.comment,
+    created_at: c.timestamp
+  }));
+  res.render('contacts', { contacts: contactsView });
+});
+
+app.get('/payments', ensureAuthenticated, async (req, res) => {
+  const payments = await PaymentsModel.getAllPayments();
+  res.render('payments', { payments });
+});
 

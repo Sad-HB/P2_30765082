@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<h2>Contactos recibidos</h2>
+<input type="text" id="searchInput" placeholder="Buscar..." class="form-control mb-3" />
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Mensaje</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
+  <tbody id="contactsTable">
+    <% contacts.forEach(function(contact) { %>
+      <tr>
+        <td><%= contact.name %></td>
+        <td><%= contact.email %></td>
+        <td><%= contact.message %></td>
+        <td><%= contact.created_at %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+<script>
+  document.getElementById('searchInput').addEventListener('input', function() {
+    const value = this.value.toLowerCase();
+    document.querySelectorAll('#contactsTable tr').forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(value) ? '' : 'none';
+    });
+  });
+</script>
+<%- include('partials/footer') %>

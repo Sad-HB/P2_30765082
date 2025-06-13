@@ -27,6 +27,8 @@ const UsersModel_1 = require("./models/UsersModel");
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const sqlite_1 = require("sqlite");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const ContactsModel_1 = require("./models/ContactsModel");
+const PaymentsModel_1 = require("./models/PaymentsModel");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
@@ -98,6 +100,11 @@ app.use((req, res, next) => {
     res.locals.RECAPTCHA_SITE_KEY = process.env.RECAPTCHA_SITE_KEY || '';
     next();
 });
+// Middleware para exponer la variable de entorno GA_MEASUREMENT_ID a todas las vistas EJS
+app.use((req, res, next) => {
+    res.locals.GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || '';
+    next();
+});
 // Content Security Policy y otros middlewares
 app.use((req, res, next) => {
     const csp = [
@@ -111,6 +118,13 @@ app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", csp);
     next();
 });
+// Middleware para proteger rutas
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated && req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/login');
+}
 // Rutas de contactos
 app.post('/contact/add', ContactsController_1.ContactsController.add);
 app.get('/admin/contacts', ContactsController_1.ContactsController.index);
@@ -129,3 +143,19 @@ app.get('/auth/google', passport_1.default.authenticate('google', { scope: ['pro
 app.get('/auth/google/callback', passport_1.default.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
     res.redirect('/');
 });
+// Rutas protegidas para contactos y pagos
+app.get('/contacts', ensureAuthenticated, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const contacts = yield ContactsModel_1.ContactsModel.getAllContacts();
+    // Adaptar los datos para la vista
+    const contactsView = contacts.map((c) => ({
+        name: c.name,
+        email: c.email,
+        message: c.comment,
+        created_at: c.timestamp
+    }));
+    res.render('contacts', { contacts: contactsView });
+}));
+app.get('/payments', ensureAuthenticated, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const payments = yield PaymentsModel_1.PaymentsModel.getAllPayments();
+    res.render('payments', { payments });
+}));

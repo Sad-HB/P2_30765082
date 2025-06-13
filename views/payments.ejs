@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<h2>Pagos recibidos</h2>
+<input type="text" id="searchInput" placeholder="Buscar..." class="form-control mb-3" />
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Monto</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
+  <tbody id="paymentsTable">
+    <% payments.forEach(function(payment) { %>
+      <tr>
+        <td><%= payment.name %></td>
+        <td><%= payment.email %></td>
+        <td><%= payment.amount %></td>
+        <td><%= payment.created_at %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+<script>
+  document.getElementById('searchInput').addEventListener('input', function() {
+    const value = this.value.toLowerCase();
+    document.querySelectorAll('#paymentsTable tr').forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(value) ? '' : 'none';
+    });
+  });
+</script>
+<%- include('partials/footer') %>
