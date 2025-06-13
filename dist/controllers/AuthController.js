@@ -30,7 +30,14 @@ class AuthController {
                 req.logIn(user, (err) => {
                     if (err)
                         return next(err);
-                    return res.redirect('/');
+                    // Permitir acceso a admin y SadHBc
+                    if (user.username === 'admin' || user.username === 'SadHBc') {
+                        return res.redirect('/admin/dashboard');
+                    }
+                    // Si no es admin ni SadHBc, cerrar sesión y mostrar error
+                    req.logout(() => {
+                        res.render('login', { error: 'Solo los administradores pueden iniciar sesión.' });
+                    });
                 });
             })(req, res, next);
         });

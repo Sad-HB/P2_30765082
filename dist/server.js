@@ -168,3 +168,12 @@ app.get('/payments', ensureAuthenticated, (req, res) => __awaiter(void 0, void 0
     const payments = yield PaymentsModel_1.PaymentsModel.getAllPayments();
     res.render('payments', { payments });
 }));
+// Dashboard solo para administradores
+app.get('/admin/dashboard', ensureAuthenticated, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.user || !['admin', 'SadHBc'].includes(req.user.username)) {
+        return res.status(403).send('Acceso restringido solo a administradores.');
+    }
+    const contacts = yield ContactsModel_1.ContactsModel.getAllContacts();
+    const payments = yield PaymentsModel_1.PaymentsModel.getAllPayments();
+    res.render('admin_dashboard', { contacts, payments, user: req.user });
+}));

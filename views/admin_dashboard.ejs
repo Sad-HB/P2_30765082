@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración</title>
+</head>
+<body>
+  <header>
+    <h1>Panel de Administración</h1>
+    <nav>
+      <a href="/logout">Cerrar sesión</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Contactos Registrados</h2>
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Correo Electrónico</th>
+          <th>Nombres</th>
+          <th>Comentario</th>
+          <th>IP</th>
+          <th>Fecha y Hora</th>
+          <th>País</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (contacts && contacts.length > 0) { %>
+          <% contacts.forEach(contact => { %>
+            <tr>
+              <td><%= contact.id %></td>
+              <td><%= contact.email %></td>
+              <td><%= contact.name %></td>
+              <td><%= contact.comment %></td>
+              <td><%= contact.ip %></td>
+              <td><%= contact.timestamp %></td>
+              <td><%= contact.country %></td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr><td colspan="7">No hay contactos registrados.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Transacciones de Pagos</h2>
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Monto</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (payments && payments.length > 0) { %>
+          <% payments.forEach(payment => { %>
+            <tr>
+              <td><%= payment.id %></td>
+              <td><%= payment.name %></td>
+              <td><%= payment.email %></td>
+              <td><%= payment.amount %></td>
+              <td><%= payment.created_at %></td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr><td colspan="5">No hay pagos registrados.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

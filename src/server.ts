@@ -183,3 +183,13 @@ app.get('/payments', ensureAuthenticated, async (req, res) => {
   res.render('payments', { payments });
 });
 
+// Dashboard solo para administradores
+app.get('/admin/dashboard', ensureAuthenticated, async (req, res) => {
+  if (!req.user || !['admin', 'SadHBc'].includes((req.user as any).username)) {
+    return res.status(403).send('Acceso restringido solo a administradores.');
+  }
+  const contacts = await ContactsModel.getAllContacts();
+  const payments = await PaymentsModel.getAllPayments();
+  res.render('admin_dashboard', { contacts, payments, user: req.user });
+});
+
