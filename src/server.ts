@@ -100,6 +100,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware para exponer la variable de entorno GA_MEASUREMENT_ID a todas las vistas EJS
+app.use((req, res, next) => {
+  res.locals.GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || '';
+  next();
+});
+
 // Content Security Policy y otros middlewares
 app.use((req, res, next) => {
   const csp = [
