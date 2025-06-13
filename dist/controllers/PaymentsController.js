@@ -16,6 +16,7 @@ exports.PaymentsController = void 0;
 const express_validator_1 = require("express-validator");
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const PaymentsModel_1 = require("../models/PaymentsModel");
 dotenv_1.default.config();
 class PaymentsController {
     static validatePayment() {
@@ -59,6 +60,14 @@ class PaymentsController {
                         (data && data.success === true) ||
                         (data && data.message && (data.message.trim().toLowerCase() === 'pago exitoso' ||
                             data.message.trim().toLowerCase() === 'payment successful'))) {
+                        // Guardar el pago exitoso en la base de datos
+                        const paymentToSave = {
+                            name: cardholderName,
+                            email: email,
+                            amount: parseFloat(amount),
+                            created_at: (data.date || new Date().toISOString())
+                        };
+                        yield PaymentsModel_1.PaymentsModel.savePayment(paymentToSave);
                         return res.status(200).json({
                             success: true,
                             message: 'Pago exitoso',

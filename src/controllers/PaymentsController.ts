@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { PaymentsModel } from '../models/PaymentsModel';
 dotenv.config();
 
 export class PaymentsController {
@@ -57,6 +58,14 @@ export class PaymentsController {
             data.message.trim().toLowerCase() === 'payment successful'
           ))
         ) {
+          // Guardar el pago exitoso en la base de datos
+          const paymentToSave = {
+            name: cardholderName,
+            email: email,
+            amount: parseFloat(amount),
+            created_at: (data.date || new Date().toISOString())
+          };
+          await PaymentsModel.savePayment(paymentToSave);
           return res.status(200).json({
             success: true,
             message: 'Pago exitoso',

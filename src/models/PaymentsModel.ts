@@ -24,4 +24,14 @@ export class PaymentsModel {
     await db.close();
     return payments;
   }
+
+  static async savePayment(payment: { name: string; email: string; amount: number; created_at: string }) {
+    await this.ensureTableExists();
+    const db = await this.getDbConnection();
+    await db.run(
+      'INSERT INTO payments (name, email, amount, created_at) VALUES (?, ?, ?, ?)',
+      payment.name, payment.email, payment.amount, payment.created_at
+    );
+    await db.close();
+  }
 }

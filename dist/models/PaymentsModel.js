@@ -40,5 +40,13 @@ class PaymentsModel {
             return payments;
         });
     }
+    static savePayment(payment) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.ensureTableExists();
+            const db = yield this.getDbConnection();
+            yield db.run('INSERT INTO payments (name, email, amount, created_at) VALUES (?, ?, ?, ?)', payment.name, payment.email, payment.amount, payment.created_at);
+            yield db.close();
+        });
+    }
 }
 exports.PaymentsModel = PaymentsModel;
