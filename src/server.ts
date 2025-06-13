@@ -138,7 +138,16 @@ app.get('/admin/contacts', ContactsController.index);
 app.post('/payment/add', PaymentsController.validatePayment(), PaymentsController.add);
 
 // Ruta principal
-app.get('/', ContactsController.index);
+app.get('/', async (req, res) => {
+  let contacts = [];
+  let payments = [];
+  // Si el usuario está autenticado y es admin, mostrar datos
+  if (req.isAuthenticated && req.isAuthenticated() && req.user && (req.user as any).username === 'admin') {
+    contacts = await ContactsModel.getAllContacts();
+    payments = await PaymentsModel.getAllPayments();
+  }
+  res.render('index', { contacts, payments, user: req.user });
+});
 
 // Rutas de autenticación
 app.get('/login', AuthController.showLogin);

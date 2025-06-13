@@ -60,7 +60,6 @@ class ContactsController {
                 catch (error) {
                     console.error('Error fetching geolocation data:', error);
                 }
-                
                 const recaptchaSecret = process.env.RECAPTCHA_SECRET;
                 const recaptchaResponse = req.body['g-recaptcha-response'];
                 if (!recaptchaResponse) {
@@ -74,7 +73,6 @@ class ContactsController {
                 }
                 const dataToSave = { email, name, comment, ip, timestamp, country };
                 yield ContactsModel_1.ContactsModel.saveContact(dataToSave);
-                
                 const transporter = nodemailer_1.default.createTransport({
                     service: 'gmail',
                     auth: {

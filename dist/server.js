@@ -131,7 +131,16 @@ app.get('/admin/contacts', ContactsController_1.ContactsController.index);
 // Rutas de pagos
 app.post('/payment/add', PaymentsController_1.PaymentsController.validatePayment(), PaymentsController_1.PaymentsController.add);
 // Ruta principal
-app.get('/', ContactsController_1.ContactsController.index);
+app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let contacts = [];
+    let payments = [];
+    // Si el usuario está autenticado y es admin, mostrar datos
+    if (req.isAuthenticated && req.isAuthenticated() && req.user && req.user.username === 'admin') {
+        contacts = yield ContactsModel_1.ContactsModel.getAllContacts();
+        payments = yield PaymentsModel_1.PaymentsModel.getAllPayments();
+    }
+    res.render('index', { contacts, payments, user: req.user });
+}));
 // Rutas de autenticación
 app.get('/login', AuthController_1.AuthController.showLogin);
 app.post('/login', AuthController_1.AuthController.login);

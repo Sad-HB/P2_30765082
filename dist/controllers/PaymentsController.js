@@ -35,7 +35,7 @@ class PaymentsController {
                     return res.status(400).json({ errors: errors.array() });
                 }
                 const { email, cardholderName, cardNumber, expiryMonth, expiryYear, cvv, amount, currency } = req.body;
-                // FakePayment API (https://fakepayment.onrender.com/payments)
+                console.log('REQ.BODY:', req.body);
                 const paymentPayload = {
                     amount,
                     "card-number": cardNumber,
@@ -55,14 +55,10 @@ class PaymentsController {
                         }
                     });
                     const data = response.data;
-                    if (
-                        (data && (data.status === 'APROBADO' || data.status === 'aprobado' || data.status === 'success')) ||
+                    if ((data && (data.status === 'APROBADO' || data.status === 'aprobado' || data.status === 'success')) ||
                         (data && data.success === true) ||
-                        (data && data.message && (
-                            data.message.trim().toLowerCase() === 'pago exitoso' ||
-                            data.message.trim().toLowerCase() === 'payment successful'
-                        ))
-                    ) {
+                        (data && data.message && (data.message.trim().toLowerCase() === 'pago exitoso' ||
+                            data.message.trim().toLowerCase() === 'payment successful'))) {
                         return res.status(200).json({
                             success: true,
                             message: 'Pago exitoso',
@@ -89,7 +85,6 @@ class PaymentsController {
                         return res.status(400).json({ success: false, message: 'Número de tarjeta inválido. Verifica el número ingresado.', code: data.status });
                     }
                     else {
-                       
                         if (data && data.message && data.message.trim().toLowerCase() === 'payment successful') {
                             return res.status(400).json({ success: false, message: 'Respuesta inconsistente del proveedor de pagos. Contacte soporte.', code: data.status });
                         }
@@ -97,12 +92,10 @@ class PaymentsController {
                     }
                 }
                 catch (err) {
-                    
                     if (err.response && err.response.data && err.response.data.errors) {
                         const detalles = err.response.data.errors.map((e) => `${e.msg} (campo: ${e.path})`).join('<br>');
                         return res.status(400).json({ success: false, message: 'Error de validación en el pago:<br>' + detalles, errors: err.response.data.errors });
                     }
-                    
                     if (err.response && err.response.data && err.response.data.message) {
                         return res.status(400).json({ success: false, message: err.response.data.message });
                     }

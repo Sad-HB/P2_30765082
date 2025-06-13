@@ -108,6 +108,7 @@
 
     <section id="contact-list">
         <h2>Contactos Registrados</h2>
+        <% if (user && user.username === 'admin') { %>
         <table>
             <thead>
                 <tr>
@@ -141,8 +142,46 @@
                 <% } %>
             </tbody>
         </table>
+        <% } else { %>
+            <div style="color: #888; text-align: center;">Solo los administradores pueden ver los contactos registrados.</div>
+        <% } %>
     </section>
-    
+
+    <% if (user && user.username === 'admin') { %>
+    <section id="payments-list">
+        <h2>Transacciones de Pagos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% var payments = typeof payments !== 'undefined' ? payments : []; %>
+                <% if (payments && payments.length > 0) { %>
+                    <% payments.forEach(payment => { %>
+                        <tr>
+                            <td data-label="ID"><%= payment.id %></td>
+                            <td data-label="Nombre"><%= payment.name %></td>
+                            <td data-label="Email"><%= payment.email %></td>
+                            <td data-label="Monto"><%= payment.amount %></td>
+                            <td data-label="Fecha"><%= payment.created_at %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5">No hay pagos registrados.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </section>
+    <% } %>
+
     <footer>
         <p>&copy; 2025 Alquiler de Bicicletas Eléctricas y Scooters Urbanos. Todos los derechos reservados.</p>
     </footer>
