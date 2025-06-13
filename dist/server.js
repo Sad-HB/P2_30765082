@@ -93,6 +93,11 @@ app.use((0, express_session_1.default)({
 // Inicializar Passport
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
+// Middleware para exponer la variable de entorno RECAPTCHA_SITE_KEY a todas las vistas EJS
+app.use((req, res, next) => {
+    res.locals.RECAPTCHA_SITE_KEY = process.env.RECAPTCHA_SITE_KEY || '';
+    next();
+});
 // Content Security Policy y otros middlewares
 app.use((req, res, next) => {
     const csp = [

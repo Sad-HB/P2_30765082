@@ -94,6 +94,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Middleware para exponer la variable de entorno RECAPTCHA_SITE_KEY a todas las vistas EJS
+app.use((req, res, next) => {
+  res.locals.RECAPTCHA_SITE_KEY = process.env.RECAPTCHA_SITE_KEY || '';
+  next();
+});
+
 // Content Security Policy y otros middlewares
 app.use((req, res, next) => {
   const csp = [
