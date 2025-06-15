@@ -37,9 +37,13 @@ let usersModel: UsersModel;
 
   // Estrategia local
   passport.use(new LocalStrategy(
-    async (username: string, password: string, done: (error: any, user?: any, options?: any) => void) => {
+    async (usernameOrEmail: string, password: string, done: (error: any, user?: any, options?: any) => void) => {
       try {
-        const user = await usersModel.findByUsername(username);
+        // Buscar por username o por email
+        let user = await usersModel.findByUsername(usernameOrEmail);
+        if (!user) {
+          user = await usersModel.findByEmail(usernameOrEmail);
+        }
         if (!user) return done(null, false, { message: 'Usuario no encontrado' });
         const match = await bcrypt.compare(password, user.password_hash);
         if (!match) return done(null, false, { message: 'Contraseña incorrecta' });
@@ -73,9 +77,16 @@ let usersModel: UsersModel;
     profile: any,
     done: (error: any, user?: any) => void
   ) => {
+    // Obtener el email de Google
+    const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
     let user = await usersModel.findByUsername(profile.id);
     if (!user) {
-      user = await usersModel.createUser(profile.id, accessToken); // Guardar el id de Google como username
+      // Guardar el id de Google como username y el email real
+      user = await usersModel.createUser(profile.id, accessToken, email);
+    } else if (email && !user.email) {
+      // Si el usuario existe pero no tiene email, actualizarlo
+      await usersModel.updateEmailByUsername(profile.id, email);
+      user.email = email;
     }
     return done(null, user);
   }));
@@ -160,8 +171,16 @@ app.post('/register', AuthController.register);
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
-  (req, res) => {
-    res.redirect('/');
+  async (req, res) => {
+    // Si el usuario autenticado no es admin ni SadHBc por correo, cerrar sesión y mostrar mensaje
+    const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
+    if (!req.user || !adminEmails.includes((req.user as any).email)) {
+      req.logout(() => {
+        res.render('login', { error: 'Solo los administradores pueden iniciar sesión con Google.' });
+      });
+      return;
+    }
+    res.redirect('/admin/dashboard');
   }
 );
 
@@ -185,7 +204,8 @@ app.get('/payments', ensureAuthenticated, async (req, res) => {
 
 // Dashboard solo para administradores
 app.get('/admin/dashboard', ensureAuthenticated, async (req, res) => {
-  if (!req.user || !['admin', 'SadHBc'].includes((req.user as any).username)) {
+  const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
+  if (!req.user || !adminEmails.includes((req.user as any).email)) {
     return res.status(403).send('Acceso restringido solo a administradores.');
   }
   const contacts = await ContactsModel.getAllContacts();

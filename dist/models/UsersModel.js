@@ -30,16 +30,17 @@ class UsersModel {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE,
       password_hash TEXT,
+      email TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`);
             return new UsersModel(db);
         });
     }
-    createUser(username, password) {
+    createUser(username, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const password_hash = yield bcrypt_1.default.hash(password, 10);
-            const result = yield this.db.run('INSERT INTO users (username, password_hash) VALUES (?, ?)', username, password_hash);
-            return { id: result.lastID, username, password_hash };
+            const result = yield this.db.run('INSERT INTO users (username, password_hash, email) VALUES (?, ?, ?)', username, password_hash, email || null);
+            return { id: result.lastID, username, password_hash, email };
         });
     }
     findByUsername(username) {
@@ -50,6 +51,18 @@ class UsersModel {
     findById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.get('SELECT * FROM users WHERE id = ?', id);
+        });
+    }
+    // Permite actualizar el email de un usuario por username
+    updateEmailByUsername(username, email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.db.run('UPDATE users SET email = ? WHERE username = ?', email, username);
+        });
+    }
+    // Buscar usuario por email
+    findByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.db.get('SELECT * FROM users WHERE email = ?', email);
         });
     }
 }

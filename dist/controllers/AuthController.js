@@ -30,11 +30,12 @@ class AuthController {
                 req.logIn(user, (err) => {
                     if (err)
                         return next(err);
-                    // Permitir acceso a admin y SadHBc
-                    if (user.username === 'admin' || user.username === 'SadHBc') {
+                    // Permitir acceso solo a administradores por correo
+                    const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
+                    if (user.email && adminEmails.includes(user.email)) {
                         return res.redirect('/admin/dashboard');
                     }
-                    // Si no es admin ni SadHBc, cerrar sesión y mostrar error
+                    // Si no es admin, cerrar sesión y mostrar error
                     req.logout(() => {
                         res.render('login', { error: 'Solo los administradores pueden iniciar sesión.' });
                     });

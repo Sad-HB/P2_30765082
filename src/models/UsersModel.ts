@@ -6,6 +6,7 @@ export interface User {
   id?: number;
   username: string;
   password_hash: string;
+  email?: string;
   created_at?: string;
 }
 
@@ -25,19 +26,21 @@ export class UsersModel {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE,
       password_hash TEXT,
+      email TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`);
     return new UsersModel(db);
   }
 
-  async createUser(username: string, password: string) {
+  async createUser(username: string, password: string, email?: string) {
     const password_hash = await bcrypt.hash(password, 10);
     const result = await this.db.run(
-      'INSERT INTO users (username, password_hash) VALUES (?, ?)',
+      'INSERT INTO users (username, password_hash, email) VALUES (?, ?, ?)',
       username,
-      password_hash
+      password_hash,
+      email || null
     );
-    return { id: result.lastID, username, password_hash };
+    return { id: result.lastID, username, password_hash, email };
   }
 
   async findByUsername(username: string): Promise<User | undefined> {
@@ -46,5 +49,15 @@ export class UsersModel {
 
   async findById(id: number): Promise<User | undefined> {
     return this.db.get('SELECT * FROM users WHERE id = ?', id);
+  }
+
+  // Permite actualizar el email de un usuario por username
+  async updateEmailByUsername(username: string, email: string) {
+    await this.db.run('UPDATE users SET email = ? WHERE username = ?', email, username);
+  }
+
+  // Buscar usuario por email
+  async findByEmail(email: string) {
+    return this.db.get('SELECT * FROM users WHERE email = ?', email);
   }
 }

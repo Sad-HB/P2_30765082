@@ -44,9 +44,13 @@ let usersModel;
     usersModel = yield UsersModel_1.UsersModel.initialize(path_1.default.join(__dirname, '../database.sqlite'));
     app.locals.usersModel = usersModel;
     // Estrategia local
-    passport_1.default.use(new passport_local_1.Strategy((username, password, done) => __awaiter(void 0, void 0, void 0, function* () {
+    passport_1.default.use(new passport_local_1.Strategy((usernameOrEmail, password, done) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const user = yield usersModel.findByUsername(username);
+            // Buscar por username o por email
+            let user = yield usersModel.findByUsername(usernameOrEmail);
+            if (!user) {
+                user = yield usersModel.findByEmail(usernameOrEmail);
+            }
             if (!user)
                 return done(null, false, { message: 'Usuario no encontrado' });
             const match = yield bcrypt_1.default.compare(password, user.password_hash);
@@ -76,9 +80,17 @@ let usersModel;
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
         callbackURL: '/auth/google/callback',
     }, (accessToken, refreshToken, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
+        // Obtener el email de Google
+        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
         let user = yield usersModel.findByUsername(profile.id);
         if (!user) {
-            user = yield usersModel.createUser(profile.id, accessToken); // Guardar el id de Google como username
+            // Guardar el id de Google como username y el email real
+            user = yield usersModel.createUser(profile.id, accessToken, email);
+        }
+        else if (email && !user.email) {
+            // Si el usuario existe pero no tiene email, actualizarlo
+            yield usersModel.updateEmailByUsername(profile.id, email);
+            user.email = email;
         }
         return done(null, user);
     })));
@@ -149,9 +161,17 @@ app.get('/register', AuthController_1.AuthController.showRegister);
 app.post('/register', AuthController_1.AuthController.register);
 // Google OAuth
 app.get('/auth/google', passport_1.default.authenticate('google', { scope: ['profile'] }));
-app.get('/auth/google/callback', passport_1.default.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-    res.redirect('/');
-});
+app.get('/auth/google/callback', passport_1.default.authenticate('google', { failureRedirect: '/login' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Si el usuario autenticado no es admin ni SadHBc por correo, cerrar sesión y mostrar mensaje
+    const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
+    if (!req.user || !adminEmails.includes(req.user.email)) {
+        req.logout(() => {
+            res.render('login', { error: 'Solo los administradores pueden iniciar sesión con Google.' });
+        });
+        return;
+    }
+    res.redirect('/admin/dashboard');
+}));
 // Rutas protegidas para contactos y pagos
 app.get('/contacts', ensureAuthenticated, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contacts = yield ContactsModel_1.ContactsModel.getAllContacts();
@@ -170,7 +190,8 @@ app.get('/payments', ensureAuthenticated, (req, res) => __awaiter(void 0, void 0
 }));
 // Dashboard solo para administradores
 app.get('/admin/dashboard', ensureAuthenticated, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.user || !['admin', 'SadHBc'].includes(req.user.username)) {
+    const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
+    if (!req.user || !adminEmails.includes(req.user.email)) {
         return res.status(403).send('Acceso restringido solo a administradores.');
     }
     const contacts = yield ContactsModel_1.ContactsModel.getAllContacts();
