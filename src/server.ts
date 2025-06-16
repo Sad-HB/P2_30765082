@@ -101,7 +101,20 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecret',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 15 * 60 * 1000 // 15 minutos
+  }
 }));
+// Middleware para renovar expiración por inactividad
+app.use((req, res, next) => {
+  if (req.session) {
+    req.session.touch();
+  }
+  next();
+});
 
 // Inicializar Passport
 app.use(passport.initialize());
