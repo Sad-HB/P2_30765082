@@ -103,7 +103,20 @@ app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || 'supersecret',
     resave: false,
     saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 15 * 60 * 1000 // 15 minutos
+    }
 }));
+// Middleware para renovar expiración por inactividad
+app.use((req, res, next) => {
+    if (req.session) {
+        req.session.touch();
+    }
+    next();
+});
 // Inicializar Passport
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
@@ -151,7 +164,8 @@ app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         contacts = yield ContactsModel_1.ContactsModel.getAllContacts();
         payments = yield PaymentsModel_1.PaymentsModel.getAllPayments();
     }
-    res.render('index', { contacts, payments, user: req.user });
+    // Pasar el parámetro adminError si viene en la query
+    res.render('index', { contacts, payments, user: req.user, adminError: req.query.adminError });
 }));
 // Rutas de autenticación
 app.get('/login', AuthController_1.AuthController.showLogin);

@@ -42,7 +42,20 @@
             </ul>
         </nav>
     </header>
-
+    <% if (typeof adminError !== 'undefined' || (typeof query !== 'undefined' && query.adminError)) { %>
+      <div id="admin-error-modal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:9999;display:flex;align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:32px 24px;border-radius:12px;box-shadow:0 2px 16px #0002;max-width:90vw;text-align:center;">
+          <h3 style="color:#b02a37;margin-bottom:12px;">Solo los administradores pueden iniciar sesión</h3>
+          <button onclick="document.getElementById('admin-error-modal').style.display='none'" style="margin-top:18px;padding:8px 24px;border-radius:8px;background:#007BFF;color:#fff;border:none;cursor:pointer;">Cerrar</button>
+        </div>
+      </div>
+      <script>
+        setTimeout(function(){
+          var modal = document.getElementById('admin-error-modal');
+          if(modal) modal.style.display = 'none';
+        }, 60000); // 1 minuto
+      </script>
+    <% } %>
     <section id="descripcion">
         <h2>Descripción del Servicio</h2>
         <p>Ofrecemos un servicio de alquiler de <em>bicicletas eléctricas</em> y <em>scooters urbanos</em> para que disfrutes de la ciudad de manera <strong>sostenible</strong> y <strong>divertida</strong>. Nuestros vehículos son fáciles de usar y están disponibles en varias ubicaciones estratégicas.</p>
@@ -109,6 +122,14 @@
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="MXN">MXN</option>
+            </select>
+
+            <label for="servicio">Servicio:</label>
+            <select id="servicio" name="servicio" required>
+                <option value="Bicicleta eléctrica">Bicicleta eléctrica</option>
+                <option value="Scooter urbano">Scooter urbano</option>
+                <option value="Accesorio">Accesorio</option>
+                <option value="Otro">Otro</option>
             </select>
 
             <button type="submit" class="glow-on-hover">Pagar</button>
@@ -464,6 +485,7 @@ paymentForm.addEventListener('submit', async function(event) {
     formData.append('cvv', paymentForm.cvv.value);
     formData.append('amount', paymentForm.amount.value);
     formData.append('currency', paymentForm.currency.value);
+    formData.append('servicio', paymentForm.servicio.value);
     try {
         const response = await fetch('/payment/add', {
             method: 'POST',

@@ -170,7 +170,8 @@ app.get('/', async (req, res) => {
     contacts = await ContactsModel.getAllContacts();
     payments = await PaymentsModel.getAllPayments();
   }
-  res.render('index', { contacts, payments, user: req.user });
+  // Pasar el parámetro adminError si viene en la query
+  res.render('index', { contacts, payments, user: req.user, adminError: req.query.adminError });
 });
 
 // Rutas de autenticación

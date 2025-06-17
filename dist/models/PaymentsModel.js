@@ -27,7 +27,7 @@ class PaymentsModel {
     static ensureTableExists() {
         return __awaiter(this, void 0, void 0, function* () {
             const db = yield this.getDbConnection();
-            yield db.run('CREATE TABLE IF NOT EXISTS payments (id INTEGER PRIMARY KEY, name TEXT, email TEXT, amount REAL, created_at TEXT)');
+            yield db.run('CREATE TABLE IF NOT EXISTS payments (id INTEGER PRIMARY KEY, name TEXT, email TEXT, amount REAL, created_at TEXT, servicio TEXT, estado_pago TEXT)');
             yield db.close();
         });
     }
@@ -44,7 +44,7 @@ class PaymentsModel {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.ensureTableExists();
             const db = yield this.getDbConnection();
-            yield db.run('INSERT INTO payments (name, email, amount, created_at) VALUES (?, ?, ?, ?)', payment.name, payment.email, payment.amount, payment.created_at);
+            yield db.run('INSERT INTO payments (name, email, amount, created_at, servicio, estado_pago) VALUES (?, ?, ?, ?, ?, ?)', payment.name, payment.email, payment.amount, payment.created_at, payment.servicio, payment.estado_pago);
             yield db.close();
         });
     }

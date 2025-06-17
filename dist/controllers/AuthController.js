@@ -35,9 +35,9 @@ class AuthController {
                     if (user.email && adminEmails.includes(user.email)) {
                         return res.redirect('/admin/dashboard');
                     }
-                    // Si no es admin, cerrar sesión y mostrar error
+                    // Si no es admin, cerrar sesión y mostrar mensaje en la página principal
                     req.logout(() => {
-                        res.render('login', { error: 'Solo los administradores pueden iniciar sesión.' });
+                        res.redirect('/?adminError=1');
                     });
                 });
             })(req, res, next);

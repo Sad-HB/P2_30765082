@@ -23,7 +23,7 @@ export class PaymentsController {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { email, cardholderName, cardNumber, expiryMonth, expiryYear, cvv, amount, currency } = req.body;
+      const { email, cardholderName, cardNumber, expiryMonth, expiryYear, cvv, amount, currency, servicio } = req.body;
 
       console.log('REQ.BODY:', req.body);
 
@@ -36,7 +36,8 @@ export class PaymentsController {
         "full-name": cardholderName,
         currency,
         description: `Pago de ${email}`,
-        reference: email
+        reference: email,
+        servicio: servicio || 'General'
       };
       try {
         const response = await axios.post(
@@ -63,7 +64,9 @@ export class PaymentsController {
             name: cardholderName,
             email: email,
             amount: parseFloat(amount),
-            created_at: (data.date || new Date().toISOString())
+            created_at: (data.date || new Date().toISOString()),
+            servicio: servicio || (data.servicio || 'General'),
+            estado_pago: data.status || data.message || 'APROBADO'
           };
           await PaymentsModel.savePayment(paymentToSave);
           return res.status(200).json({

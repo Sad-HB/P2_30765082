@@ -14,6 +14,17 @@
 
   <section>
     <h2>Contactos Registrados</h2>
+    <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
+      <input type="text" id="searchContactInput" placeholder="Buscar contacto..." class="form-control mb-2" style="max-width: 220px; min-width: 120px;" />
+      <input type="date" id="contactDateFrom" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <input type="date" id="contactDateTo" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <select id="countryFilter" class="form-control mb-2" style="max-width: 180px; min-width: 120px;">
+        <option value="">Todos los países</option>
+        <% const countries = [...new Set(contacts.map(c => c.country || ''))]; countries.forEach(c => { if (c) { %>
+          <option value="<%= c %>"><%= c %></option>
+        <% }}); %>
+      </select>
+    </div>
     <table border="1" cellpadding="6">
       <thead>
         <tr>
@@ -26,7 +37,7 @@
           <th>País</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="contactsTable">
         <% if (contacts && contacts.length > 0) { %>
           <% contacts.forEach(contact => { %>
             <tr>
@@ -44,10 +55,50 @@
         <% } %>
       </tbody>
     </table>
+    <script>
+    function filterContacts() {
+      const search = document.getElementById('searchContactInput').value.toLowerCase();
+      const from = document.getElementById('contactDateFrom').value;
+      const to = document.getElementById('contactDateTo').value;
+      const country = document.getElementById('countryFilter').value;
+      document.querySelectorAll('#contactsTable tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const countryCell = cells[6]?.textContent || '';
+        const fechaCell = cells[5]?.textContent || '';
+        let show = true;
+        if (search && !row.textContent.toLowerCase().includes(search)) show = false;
+        if (country && countryCell !== country) show = false;
+        if (from && new Date(fechaCell) < new Date(from)) show = false;
+        if (to && new Date(fechaCell) > new Date(to)) show = false;
+        row.style.display = show ? '' : 'none';
+      });
+    }
+    document.getElementById('searchContactInput').addEventListener('input', filterContacts);
+    document.getElementById('contactDateFrom').addEventListener('change', filterContacts);
+    document.getElementById('contactDateTo').addEventListener('change', filterContacts);
+    document.getElementById('countryFilter').addEventListener('change', filterContacts);
+    </script>
   </section>
 
   <section>
     <h2>Transacciones de Pagos</h2>
+    <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
+      <input type="text" id="searchInput" placeholder="Buscar..." class="form-control mb-2" style="max-width: 200px; min-width: 120px;" />
+      <input type="date" id="dateFrom" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <input type="date" id="dateTo" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <select id="servicioFilter" class="form-control mb-2" style="max-width: 180px; min-width: 120px;">
+        <option value="">Todos los servicios</option>
+        <% const servicios = [...new Set(payments.map(p => p.servicio || 'General'))]; servicios.forEach(s => { %>
+          <option value="<%= s %>"><%= s %></option>
+        <% }) %>
+      </select>
+      <select id="estadoFilter" class="form-control mb-2" style="max-width: 180px; min-width: 120px;">
+        <option value="">Todos los estados</option>
+        <% const estados = [...new Set(payments.map(p => p.estado_pago || 'APROBADO'))]; estados.forEach(e => { %>
+          <option value="<%= e %>"><%= e %></option>
+        <% }) %>
+      </select>
+    </div>
     <table border="1" cellpadding="6">
       <thead>
         <tr>
@@ -56,9 +107,11 @@
           <th>Email</th>
           <th>Monto</th>
           <th>Fecha</th>
+          <th>Servicio</th>
+          <th>Estado de Pago</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="paymentsTable">
         <% if (payments && payments.length > 0) { %>
           <% payments.forEach(payment => { %>
             <tr>
@@ -67,13 +120,42 @@
               <td><%= payment.email %></td>
               <td><%= payment.amount %></td>
               <td><%= payment.created_at %></td>
+              <td><%= payment.servicio || 'General' %></td>
+              <td><%= payment.estado_pago || 'APROBADO' %></td>
             </tr>
           <% }); %>
         <% } else { %>
-          <tr><td colspan="5">No hay pagos registrados.</td></tr>
+          <tr><td colspan="7">No hay pagos registrados.</td></tr>
         <% } %>
       </tbody>
     </table>
+    <script>
+    function filterPayments() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const from = document.getElementById('dateFrom').value;
+      const to = document.getElementById('dateTo').value;
+      const servicio = document.getElementById('servicioFilter').value;
+      const estado = document.getElementById('estadoFilter').value;
+      document.querySelectorAll('#paymentsTable tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const servicioCell = cells[5]?.textContent || '';
+        const estadoCell = cells[6]?.textContent || '';
+        const fechaCell = cells[4]?.textContent || '';
+        let show = true;
+        if (search && !row.textContent.toLowerCase().includes(search)) show = false;
+        if (servicio && servicioCell !== servicio) show = false;
+        if (estado && estadoCell !== estado) show = false;
+        if (from && new Date(fechaCell) < new Date(from)) show = false;
+        if (to && new Date(fechaCell) > new Date(to)) show = false;
+        row.style.display = show ? '' : 'none';
+      });
+    }
+    document.getElementById('searchInput').addEventListener('input', filterPayments);
+    document.getElementById('dateFrom').addEventListener('change', filterPayments);
+    document.getElementById('dateTo').addEventListener('change', filterPayments);
+    document.getElementById('servicioFilter').addEventListener('change', filterPayments);
+    document.getElementById('estadoFilter').addEventListener('change', filterPayments);
+    </script>
   </section>
 </body>
 </html>
