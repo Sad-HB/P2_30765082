@@ -30,8 +30,6 @@ const sqlite_1 = require("sqlite");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const ContactsModel_1 = require("./models/ContactsModel");
 const PaymentsModel_1 = require("./models/PaymentsModel");
-const connect_sqlite3_1 = __importDefault(require("connect-sqlite3"));
-const fs_1 = __importDefault(require("fs"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
@@ -101,17 +99,8 @@ let usersModel;
         console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });
 }))();
-// Determinar ruta de sesiones según entorno
-let sessionDir = './';
-if (process.env.RENDER === 'true' && fs_1.default.existsSync('/data')) {
-    sessionDir = '/data';
-    console.log('Usando /data para sesiones (Render)');
-}
-else {
-    console.log('Usando ./ para sesiones (local)');
-}
+// Configuración de sesión
 app.use((0, express_session_1.default)({
-    store: new ((0, connect_sqlite3_1.default)(express_session_1.default))({ db: 'sessions.sqlite', dir: sessionDir }),
     secret: process.env.SESSION_SECRET || 'supersecret',
     resave: false,
     saveUninitialized: false,
@@ -122,11 +111,7 @@ app.use((0, express_session_1.default)({
         maxAge: 15 * 60 * 1000 // 15 minutos
     }
 }));
-// Log para depuración de sesión
-app.use((req, res, next) => {
-    console.log('Session:', req.session);
-    next();
-});
+// Middleware para renovar expiración por inactividad
 app.use((req, res, next) => {
     if (req.session) {
         req.session.touch();
