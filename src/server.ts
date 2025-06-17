@@ -100,17 +100,23 @@ let usersModel: UsersModel;
 
 // Configuración de sesión
 app.use(session({
-  store: new (connectSqlite3(session))({ db: 'sessions.sqlite', dir: './' }) as any,
+  store: new (connectSqlite3(session))({ db: 'sessions.sqlite', dir: process.env.RENDER ? '/data' : './' }) as any,
   secret: process.env.SESSION_SECRET || 'supersecret',
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'strict',
+    sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 15 * 60 * 1000 // 15 minutos
   }
 }));
+
+// Log para depuración de sesión
+app.use((req, res, next) => {
+  console.log('Session:', req.session);
+  next();
+});
 
 app.use((req, res, next) => {
   if (req.session) {
