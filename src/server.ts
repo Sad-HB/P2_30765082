@@ -111,7 +111,7 @@ app.use(session({
     maxAge: 15 * 60 * 1000 // 15 minutos
   }
 }));
-// Middleware para renovar expiración por inactividad
+
 app.use((req, res, next) => {
   if (req.session) {
     req.session.touch();
