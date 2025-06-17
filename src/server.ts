@@ -105,7 +105,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Forzado a false para pruebas en Render
     maxAge: 15 * 60 * 1000 // 15 minutos
   }
 }));
