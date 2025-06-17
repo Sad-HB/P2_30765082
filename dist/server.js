@@ -31,6 +31,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const ContactsModel_1 = require("./models/ContactsModel");
 const PaymentsModel_1 = require("./models/PaymentsModel");
 const connect_sqlite3_1 = __importDefault(require("connect-sqlite3"));
+const fs_1 = __importDefault(require("fs"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
@@ -100,9 +101,17 @@ let usersModel;
         console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });
 }))();
-// Configuración de sesión
+// Determinar ruta de sesiones según entorno
+let sessionDir = './';
+if (process.env.RENDER === 'true' && fs_1.default.existsSync('/data')) {
+    sessionDir = '/data';
+    console.log('Usando /data para sesiones (Render)');
+}
+else {
+    console.log('Usando ./ para sesiones (local)');
+}
 app.use((0, express_session_1.default)({
-    store: new ((0, connect_sqlite3_1.default)(express_session_1.default))({ db: 'sessions.sqlite', dir: process.env.RENDER ? '/data' : './' }),
+    store: new ((0, connect_sqlite3_1.default)(express_session_1.default))({ db: 'sessions.sqlite', dir: sessionDir }),
     secret: process.env.SESSION_SECRET || 'supersecret',
     resave: false,
     saveUninitialized: false,

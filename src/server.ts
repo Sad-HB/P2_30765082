@@ -17,6 +17,7 @@ import bcrypt from 'bcrypt';
 import { ContactsModel } from './models/ContactsModel';
 import { PaymentsModel } from './models/PaymentsModel';
 import connectSqlite3 from 'connect-sqlite3';
+import fs from 'fs';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -98,9 +99,17 @@ let usersModel: UsersModel;
   });
 })();
 
-// Configuración de sesión
+// Determinar ruta de sesiones según entorno
+let sessionDir = './';
+if (process.env.RENDER === 'true' && fs.existsSync('/data')) {
+  sessionDir = '/data';
+  console.log('Usando /data para sesiones (Render)');
+} else {
+  console.log('Usando ./ para sesiones (local)');
+}
+
 app.use(session({
-  store: new (connectSqlite3(session))({ db: 'sessions.sqlite', dir: process.env.RENDER ? '/data' : './' }) as any,
+  store: new (connectSqlite3(session))({ db: 'sessions.sqlite', dir: sessionDir }) as any,
   secret: process.env.SESSION_SECRET || 'supersecret',
   resave: false,
   saveUninitialized: false,
