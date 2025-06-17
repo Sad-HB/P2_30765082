@@ -30,6 +30,7 @@ const sqlite_1 = require("sqlite");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const ContactsModel_1 = require("./models/ContactsModel");
 const PaymentsModel_1 = require("./models/PaymentsModel");
+const connect_sqlite3_1 = __importDefault(require("connect-sqlite3"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
@@ -101,12 +102,13 @@ let usersModel;
 }))();
 // Configuración de sesión
 app.use((0, express_session_1.default)({
+    store: new connect_sqlite3_1.default({ db: 'sessions.sqlite', dir: './' }),
     secret: process.env.SESSION_SECRET || 'supersecret',
     resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'strict',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 15 * 60 * 1000 // 15 minutos
     }
@@ -140,7 +142,7 @@ app.use((req, res, next) => {
         "style-src 'self' 'unsafe-inline' https://www.gstatic.com;",
         "style-src-elem 'self' 'unsafe-inline' https://www.gstatic.com;",
         " connect-src 'self' https://www.google-analytics.com;", "frame-ancestors 'self' https://www.google.com;",
-        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css;"
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     ].join(' ');
     res.setHeader("Content-Security-Policy", csp);
     next();

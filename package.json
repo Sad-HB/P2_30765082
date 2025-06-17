@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
+    "connect-sqlite3": "^0.9.15",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^4.x.x",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "@types/bcrypt": "^5.0.2",
+    "@types/connect-sqlite3": "^0.9.5",
     "@types/express": "^4.x.x",
     "@types/express-session": "^1.18.2",
     "@types/nodemailer": "^6.4.17",
