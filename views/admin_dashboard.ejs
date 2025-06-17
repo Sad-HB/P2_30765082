@@ -2,182 +2,60 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel de Administración </title>
-  <style>
-  body{
-    background:#1b1b1b;
-    font-family: 'Poppins', sans-serif;
-  }
-  .admin-section {
-    width: 90vw;
-    max-width: 900px;
-    margin: 40px auto;
-    background:#1b1b1b;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
-    padding: 0 0 32px 0;
-  }
-  .admin-box{
-    padding: 32px 24px 24px 24px;
-    background:#252525;
-    border-radius: 14px;
-    margin-bottom: 32px;
-  }
-  h2 {
-    color: #2fd0f5;
-    text-align: center;
-    margin-bottom: 18px;
-  }
-  .input-field{
-    width: 100%;
-    padding: 10px 5px;
-    border: none;
-    border-bottom: 2px solid #2fd0f5;
-    background: transparent;
-    color: #fff;
-    font-size: 16px;
-    outline: none;
-    border-radius: 30px;
-    margin-bottom: 6px;
-  }
-  .input-field:focus{
-    border-bottom: 2px solid #57AAB4;
-  }
-  table {
-    width: 100%;
-    background:#232323;
-    color:#fff;
-    border-radius:10px;
-    margin-bottom: 18px;
-    overflow: hidden;
-  }
-  table th, table td {
-    padding: 10px 8px;
-    text-align: left;
-  }
-  table th {
-    background: #2fd0f5;
-    color: #222;
-  }
-  table tr:nth-child(even) {
-    background: #232323;
-  }
-  table tr:nth-child(odd) {
-    background: #252525;
-  }
-  nav a[href="/logout"]:hover {
-    background: #57AAB4;
-    color: #fff;
-    box-shadow: 0 4px 16px #2fd0f5;
-  }
-  </style>
+  <title>Panel de Administración</title>
 </head>
 <body>
-  <header style="display:flex;flex-direction:column;align-items:center;">
-    <nav style="width:100%;display:flex;justify-content:flex-end;padding:18px 24px 0 0;box-sizing:border-box;">
-      <a href="/logout" style="display:inline-block;padding:8px 22px;background:#2fd0f5;color:#222;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;">Cerrar sesión</a>
+  <header>
+    <h1>Panel de Administración</h1>
+    <nav>
+      <a href="/logout">Cerrar sesión</a>
     </nav>
-    <h1 style="text-align:center;font-size:2.2rem;color:#2fd0f5;margin:18px 0 10px 0;letter-spacing:1px;">Panel de Administración</h1>
   </header>
 
-  <section class="admin-section">
-    <div class="admin-box">
-      <h2>Contactos Registrados</h2>
-      <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
-        <input type="text" id="searchContactInput" placeholder="Buscar contacto..." class="input-field" style="max-width: 220px; min-width: 120px;" />
-        <input type="date" id="contactDateFrom" class="input-field" style="max-width: 160px; min-width: 120px;" />
-        <input type="date" id="contactDateTo" class="input-field" style="max-width: 160px; min-width: 120px;" />
-        <select id="countryFilter" class="input-field" style="max-width: 180px; min-width: 120px;">
-          <option value="">Todos los países</option>
-          <% const countries = [...new Set(contacts.map(c => c.country || ''))]; countries.forEach(c => { if (c) { %>
-            <option value="<%= c %>"><%= c %></option>
-          <% }}); %>
-        </select>
-      </div>
-      <table border="0" cellpadding="6">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Correo Electrónico</th>
-            <th>Nombres</th>
-            <th>Comentario</th>
-            <th>IP</th>
-            <th>Fecha y Hora</th>
-            <th>País</th>
-          </tr>
-        </thead>
-        <tbody id="contactsTable">
-          <% if (contacts && contacts.length > 0) { %>
-            <% contacts.forEach(contact => { %>
-              <tr>
-                <td><%= contact.id %></td>
-                <td><%= contact.email %></td>
-                <td><%= contact.name %></td>
-                <td><%= contact.comment %></td>
-                <td><%= contact.ip %></td>
-                <td><%= contact.timestamp %></td>
-                <td><%= contact.country %></td>
-              </tr>
-            <% }); %>
-          <% } else { %>
-            <tr><td colspan="7">No hay contactos registrados.</td></tr>
-          <% } %>
-        </tbody>
-      </table>
+  <section>
+    <h2>Contactos Registrados</h2>
+    <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
+      <input type="text" id="searchContactInput" placeholder="Buscar contacto..." class="form-control mb-2" style="max-width: 220px; min-width: 120px;" />
+      <input type="date" id="contactDateFrom" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <input type="date" id="contactDateTo" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <select id="countryFilter" class="form-control mb-2" style="max-width: 180px; min-width: 120px;">
+        <option value="">Todos los países</option>
+        <% const countries = [...new Set(contacts.map(c => c.country || ''))]; countries.forEach(c => { if (c) { %>
+          <option value="<%= c %>"><%= c %></option>
+        <% }}); %>
+      </select>
     </div>
-    <div class="admin-box">
-      <h2>Transacciones de Pagos</h2>
-      <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
-        <input type="text" id="searchInput" placeholder="Buscar..." class="input-field" style="max-width: 200px; min-width: 120px;" />
-        <input type="date" id="dateFrom" class="input-field" style="max-width: 160px; min-width: 120px;" />
-        <input type="date" id="dateTo" class="input-field" style="max-width: 160px; min-width: 120px;" />
-        <select id="servicioFilter" class="input-field" style="max-width: 180px; min-width: 120px;">
-          <option value="">Todos los servicios</option>
-          <% const servicios = [...new Set(payments.map(p => p.servicio || 'General'))]; servicios.forEach(s => { %>
-            <option value="<%= s %>"><%= s %></option>
-          <% }) %>
-        </select>
-        <select id="estadoFilter" class="input-field" style="max-width: 180px; min-width: 120px; color: #000;">
-          <option value="">Todos los estados</option>
-          <% const estados = [...new Set(payments.map(p => p.estado_pago || 'APROBADO'))]; estados.forEach(e => { %>
-            <option value="<%= e %>"><%= e %></option>
-          <% }) %>
-        </select>
-      </div>
-      <table border="0" cellpadding="6">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Monto</th>
-            <th>Fecha</th>
-            <th>Servicio</th>
-            <th>Estado de Pago</th>
-          </tr>
-        </thead>
-        <tbody id="paymentsTable">
-          <% if (payments && payments.length > 0) { %>
-            <% payments.forEach(payment => { %>
-              <tr>
-                <td><%= payment.id %></td>
-                <td><%= payment.name %></td>
-                <td><%= payment.email %></td>
-                <td><%= payment.amount %></td>
-                <td><%= payment.created_at %></td>
-                <td><%= payment.servicio || 'General' %></td>
-                <td><%= payment.estado_pago || 'APROBADO' %></td>
-              </tr>
-            <% }); %>
-          <% } else { %>
-            <tr><td colspan="7">No hay pagos registrados.</td></tr>
-          <% } %>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <script>
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Correo Electrónico</th>
+          <th>Nombres</th>
+          <th>Comentario</th>
+          <th>IP</th>
+          <th>Fecha y Hora</th>
+          <th>País</th>
+        </tr>
+      </thead>
+      <tbody id="contactsTable">
+        <% if (contacts && contacts.length > 0) { %>
+          <% contacts.forEach(contact => { %>
+            <tr>
+              <td><%= contact.id %></td>
+              <td><%= contact.email %></td>
+              <td><%= contact.name %></td>
+              <td><%= contact.comment %></td>
+              <td><%= contact.ip %></td>
+              <td><%= contact.timestamp %></td>
+              <td><%= contact.country %></td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr><td colspan="7">No hay contactos registrados.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+    <script>
     function filterContacts() {
       const search = document.getElementById('searchContactInput').value.toLowerCase();
       const from = document.getElementById('contactDateFrom').value;
@@ -199,7 +77,59 @@
     document.getElementById('contactDateFrom').addEventListener('change', filterContacts);
     document.getElementById('contactDateTo').addEventListener('change', filterContacts);
     document.getElementById('countryFilter').addEventListener('change', filterContacts);
+    </script>
+  </section>
 
+  <section>
+    <h2>Transacciones de Pagos</h2>
+    <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
+      <input type="text" id="searchInput" placeholder="Buscar..." class="form-control mb-2" style="max-width: 200px; min-width: 120px;" />
+      <input type="date" id="dateFrom" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <input type="date" id="dateTo" class="form-control mb-2" style="max-width: 160px; min-width: 120px;" />
+      <select id="servicioFilter" class="form-control mb-2" style="max-width: 180px; min-width: 120px;">
+        <option value="">Todos los servicios</option>
+        <% const servicios = [...new Set(payments.map(p => p.servicio || 'General'))]; servicios.forEach(s => { %>
+          <option value="<%= s %>"><%= s %></option>
+        <% }) %>
+      </select>
+      <select id="estadoFilter" class="form-control mb-2" style="max-width: 180px; min-width: 120px;">
+        <option value="">Todos los estados</option>
+        <% const estados = [...new Set(payments.map(p => p.estado_pago || 'APROBADO'))]; estados.forEach(e => { %>
+          <option value="<%= e %>"><%= e %></option>
+        <% }) %>
+      </select>
+    </div>
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Monto</th>
+          <th>Fecha</th>
+          <th>Servicio</th>
+          <th>Estado de Pago</th>
+        </tr>
+      </thead>
+      <tbody id="paymentsTable">
+        <% if (payments && payments.length > 0) { %>
+          <% payments.forEach(payment => { %>
+            <tr>
+              <td><%= payment.id %></td>
+              <td><%= payment.name %></td>
+              <td><%= payment.email %></td>
+              <td><%= payment.amount %></td>
+              <td><%= payment.created_at %></td>
+              <td><%= payment.servicio || 'General' %></td>
+              <td><%= payment.estado_pago || 'APROBADO' %></td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr><td colspan="7">No hay pagos registrados.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+    <script>
     function filterPayments() {
       const search = document.getElementById('searchInput').value.toLowerCase();
       const from = document.getElementById('dateFrom').value;
@@ -225,6 +155,7 @@
     document.getElementById('dateTo').addEventListener('change', filterPayments);
     document.getElementById('servicioFilter').addEventListener('change', filterPayments);
     document.getElementById('estadoFilter').addEventListener('change', filterPayments);
-  </script>
+    </script>
+  </section>
 </body>
 </html>
