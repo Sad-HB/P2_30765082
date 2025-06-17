@@ -102,7 +102,7 @@ let usersModel;
 }))();
 // Configuración de sesión
 app.use((0, express_session_1.default)({
-    store: new connect_sqlite3_1.default({ db: 'sessions.sqlite', dir: './' }),
+    store: new ((0, connect_sqlite3_1.default)(express_session_1.default))({ db: 'sessions.sqlite', dir: './' }),
     secret: process.env.SESSION_SECRET || 'supersecret',
     resave: false,
     saveUninitialized: false,
@@ -113,7 +113,6 @@ app.use((0, express_session_1.default)({
         maxAge: 15 * 60 * 1000 // 15 minutos
     }
 }));
-// Middleware para renovar expiración por inactividad
 app.use((req, res, next) => {
     if (req.session) {
         req.session.touch();
