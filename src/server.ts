@@ -16,7 +16,7 @@ import { open } from 'sqlite';
 import bcrypt from 'bcrypt';
 import { ContactsModel } from './models/ContactsModel';
 import { PaymentsModel } from './models/PaymentsModel';
-import SQLiteStore from 'connect-sqlite3';
+import connectSqlite3 from 'connect-sqlite3';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -100,7 +100,7 @@ let usersModel: UsersModel;
 
 // Configuración de sesión
 app.use(session({
-  store: new (SQLiteStore as any)({ db: 'sessions.sqlite', dir: './' }),
+  store: new (connectSqlite3(session))({ db: 'sessions.sqlite', dir: './' }) as any,
   secret: process.env.SESSION_SECRET || 'supersecret',
   resave: false,
   saveUninitialized: false,
