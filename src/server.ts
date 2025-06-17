@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { ContactsController } from './controllers/ContactsController';
 import { PaymentsController } from './controllers/PaymentsController';
 import { AuthController } from './controllers/AuthController';
+import { PasswordController } from './controllers/PasswordController';
 import session from 'express-session';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
@@ -140,7 +141,8 @@ app.use((req, res, next) => {
     "frame-src https://www.google.com https://www.gstatic.com;",
     "style-src 'self' 'unsafe-inline' https://www.gstatic.com;",
     "style-src-elem 'self' 'unsafe-inline' https://www.gstatic.com;",
-    " connect-src 'self' https://www.google-analytics.com;","frame-ancestors 'self' https://www.google.com;"
+    " connect-src 'self' https://www.google-analytics.com;","frame-ancestors 'self' https://www.google.com;",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   ].join(' ');
   res.setHeader("Content-Security-Policy", csp);
   next();
@@ -180,6 +182,10 @@ app.post('/login', AuthController.login);
 app.get('/logout', AuthController.logout);
 app.get('/register', AuthController.showRegister);
 app.post('/register', AuthController.register);
+app.get('/forgot-password', PasswordController.showForgotForm);
+app.post('/forgot-password', PasswordController.sendResetLink);
+app.get('/reset-password', PasswordController.showResetForm);
+app.post('/reset-password', PasswordController.resetPassword);
 
 // Google OAuth
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));

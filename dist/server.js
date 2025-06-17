@@ -18,6 +18,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const ContactsController_1 = require("./controllers/ContactsController");
 const PaymentsController_1 = require("./controllers/PaymentsController");
 const AuthController_1 = require("./controllers/AuthController");
+const PasswordController_1 = require("./controllers/PasswordController");
 const express_session_1 = __importDefault(require("express-session"));
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = require("passport-local");
@@ -138,7 +139,8 @@ app.use((req, res, next) => {
         "frame-src https://www.google.com https://www.gstatic.com;",
         "style-src 'self' 'unsafe-inline' https://www.gstatic.com;",
         "style-src-elem 'self' 'unsafe-inline' https://www.gstatic.com;",
-        " connect-src 'self' https://www.google-analytics.com;", "frame-ancestors 'self' https://www.google.com;"
+        " connect-src 'self' https://www.google-analytics.com;", "frame-ancestors 'self' https://www.google.com;",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css;"
     ].join(' ');
     res.setHeader("Content-Security-Policy", csp);
     next();
@@ -173,6 +175,10 @@ app.post('/login', AuthController_1.AuthController.login);
 app.get('/logout', AuthController_1.AuthController.logout);
 app.get('/register', AuthController_1.AuthController.showRegister);
 app.post('/register', AuthController_1.AuthController.register);
+app.get('/forgot-password', PasswordController_1.PasswordController.showForgotForm);
+app.post('/forgot-password', PasswordController_1.PasswordController.sendResetLink);
+app.get('/reset-password', PasswordController_1.PasswordController.showResetForm);
+app.post('/reset-password', PasswordController_1.PasswordController.resetPassword);
 // Google OAuth
 app.get('/auth/google', passport_1.default.authenticate('google', { scope: ['profile'] }));
 app.get('/auth/google/callback', passport_1.default.authenticate('google', { failureRedirect: '/login' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Iniciar Sesión</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body{
       margin: 0;
@@ -173,16 +172,43 @@
       <% } %>
       <form action="/login" method="POST" class="input-group">
         <input type="text" id="username" name="username" class="input-field" placeholder="Usuario" required>
-        <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
+        <div style="position:relative;">
+          <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required style="padding-right:10px;">
+          <button type="button" id="togglePassword" tabindex="-1" style="position: absolute; right: 10px; border: 5px solid white;border-radius: 50%; background: rgb(255, 255, 255);">
+            <i id="eyeIcon" class="fa fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
         <button type="submit" class="submit-btn">Acceso</button>
       </form>
       <form action="/auth/google" method="GET" style="margin-top: 16px;">
         <button type="submit" class="submit-btn" style="background:#232323;color:#2fd0f5;box-shadow:none;">Iniciar con Google</button>
       </form>
+      <div style="text-align:center;margin-top:18px;">
+        <a href="/forgot-password" style="color:#2fd0f5;text-decoration:underline;font-size:15px;">¿Olvidaste tu contraseña?</a>
+      </div>
       <div class="register-link">
         ¿No tienes cuenta? <a href="/register">Regístrate</a>
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const pwdInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    if(toggleBtn && pwdInput && eyeIcon) {
+      toggleBtn.addEventListener('click', function() {
+        if (pwdInput.type === 'password') {
+          pwdInput.type = 'text';
+          eyeIcon.classList.remove('fa-eye');
+          eyeIcon.classList.add('fa-eye-slash');
+        } else {
+          pwdInput.type = 'password';
+          eyeIcon.classList.remove('fa-eye-slash');
+          eyeIcon.classList.add('fa-eye');
+        }
+      });
+    }
+  </script>
 </body>
 </html>

@@ -65,5 +65,12 @@ class UsersModel {
             return this.db.get('SELECT * FROM users WHERE email = ?', email);
         });
     }
+    // Permite actualizar la contraseña por email
+    updatePasswordByEmail(email, newPassword) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const password_hash = yield bcrypt_1.default.hash(newPassword, 10);
+            yield this.db.run('UPDATE users SET password_hash = ? WHERE email = ?', password_hash, email);
+        });
+    }
 }
 exports.UsersModel = UsersModel;

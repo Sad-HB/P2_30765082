@@ -60,4 +60,10 @@ export class UsersModel {
   async findByEmail(email: string) {
     return this.db.get('SELECT * FROM users WHERE email = ?', email);
   }
+
+  // Permite actualizar la contraseña por email
+  async updatePasswordByEmail(email: string, newPassword: string) {
+    const password_hash = await bcrypt.hash(newPassword, 10);
+    await this.db.run('UPDATE users SET password_hash = ? WHERE email = ?', password_hash, email);
+  }
 }
