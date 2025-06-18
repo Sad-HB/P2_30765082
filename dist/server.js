@@ -173,8 +173,6 @@ app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 app.get('/login', AuthController_1.AuthController.showLogin);
 app.post('/login', AuthController_1.AuthController.login);
 app.get('/logout', AuthController_1.AuthController.logout);
-app.get('/register', AuthController_1.AuthController.showRegister);
-app.post('/register', AuthController_1.AuthController.register);
 app.get('/forgot-password', PasswordController_1.PasswordController.showForgotForm);
 app.post('/forgot-password', PasswordController_1.PasswordController.sendResetLink);
 app.get('/reset-password', PasswordController_1.PasswordController.showResetForm);

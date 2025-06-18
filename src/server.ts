@@ -180,8 +180,6 @@ app.get('/', async (req, res) => {
 app.get('/login', AuthController.showLogin);
 app.post('/login', AuthController.login);
 app.get('/logout', AuthController.logout);
-app.get('/register', AuthController.showRegister);
-app.post('/register', AuthController.register);
 app.get('/forgot-password', PasswordController.showForgotForm);
 app.post('/forgot-password', PasswordController.sendResetLink);
 app.get('/reset-password', PasswordController.showResetForm);
