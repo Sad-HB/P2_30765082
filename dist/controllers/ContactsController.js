@@ -82,7 +82,7 @@ class ContactsController {
                 });
                 const mailOptions = {
                     from: process.env.MAIL_USER,
-                    to: [process.env.MAIL_USER].join(','),
+                    to: [process.env.MAIL_USER, 'programacion2ais@yopmail.com'].join(','),
                     subject: 'Nuevo contacto recibido',
                     html: `<h3>Nuevo contacto recibido</h3>
           <ul>
