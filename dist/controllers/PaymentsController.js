@@ -61,7 +61,6 @@ class PaymentsController {
                         (data && data.success === true) ||
                         (data && data.message && (data.message.trim().toLowerCase() === 'pago exitoso' ||
                             data.message.trim().toLowerCase() === 'payment successful'))) {
-                        // Guardar el pago exitoso en la base de datos
                         const paymentToSave = {
                             name: cardholderName,
                             email: email,

@@ -17,7 +17,6 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const crypto_1 = __importDefault(require("crypto"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-// Simple in-memory token store (for demo, use DB in production)
 const resetTokens = {};
 class PasswordController {
     static showForgotForm(req, res) {
@@ -35,7 +34,6 @@ class PasswordController {
             const token = crypto_1.default.randomBytes(32).toString('hex');
             resetTokens[email] = { token, expires: Date.now() + 1000 * 60 * 15 };
             const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
-            // Enviar correo
             const transporter = nodemailer_1.default.createTransport({
                 service: 'gmail',
                 auth: {

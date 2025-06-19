@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Simple in-memory token store (for demo, use DB in production)
+
 const resetTokens: { [email: string]: { token: string, expires: number } } = {};
 
 export class PasswordController {
@@ -22,7 +22,7 @@ export class PasswordController {
     const token = crypto.randomBytes(32).toString('hex');
     resetTokens[email] = { token, expires: Date.now() + 1000 * 60 * 15 };
     const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
-    // Enviar correo
+    
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {

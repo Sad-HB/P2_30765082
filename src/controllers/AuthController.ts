@@ -13,12 +13,12 @@ export class AuthController {
       if (!user) return res.render('login', { error: info.message });
       req.logIn(user, (err: any) => {
         if (err) return next(err);
-        // Permitir acceso solo a administradores por correo
+        
         const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
         if (user.email && adminEmails.includes(user.email)) {
           return res.redirect('/admin/dashboard');
         }
-        // Si no es admin, cerrar sesión y mostrar mensaje en la página principal
+        
         req.logout(() => {
           res.redirect('/?adminError=1');
         });

@@ -26,21 +26,21 @@ app.set('views', path.join(__dirname, '../views'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Cargar variables de entorno
+
 dotenv.config();
 
-// Inicializar base de datos y modelo de usuarios
+
 let usersModel: UsersModel;
 (async () => {
   const db = await open({ filename: path.join(__dirname, '../database.sqlite'), driver: sqlite3.Database });
   usersModel = await UsersModel.initialize(path.join(__dirname, '../database.sqlite'));
   app.locals.usersModel = usersModel;
 
-  // Estrategia local
+  
   passport.use(new LocalStrategy(
     async (usernameOrEmail: string, password: string, done: (error: any, user?: any, options?: any) => void) => {
       try {
-        // Buscar por username o por email
+        
         let user = await usersModel.findByUsername(usernameOrEmail);
         if (!user) {
           user = await usersModel.findByEmail(usernameOrEmail);
@@ -67,7 +67,7 @@ let usersModel: UsersModel;
     }
   });
 
-  // Estrategia Google OAuth2
+  
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
@@ -78,14 +78,14 @@ let usersModel: UsersModel;
     profile: any,
     done: (error: any, user?: any) => void
   ) => {
-    // Obtener el email de Google
+    
     const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
     let user = await usersModel.findByUsername(profile.id);
     if (!user) {
-      // Guardar el id de Google como username y el email real
+      
       user = await usersModel.createUser(profile.id, accessToken, email);
     } else if (email && !user.email) {
-      // Si el usuario existe pero no tiene email, actualizarlo
+      
       await usersModel.updateEmailByUsername(profile.id, email);
       user.email = email;
     }
@@ -97,7 +97,7 @@ let usersModel: UsersModel;
   });
 })();
 
-// Configuración de sesión
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecret',
   resave: false,
@@ -105,11 +105,11 @@ app.use(session({
   cookie: {
     httpOnly: true,
     sameSite: 'lax',
-    secure: false, // Forzado a false para pruebas en Render
-    maxAge: 15 * 60 * 1000 // 15 minutos
+    secure: false, 
+    maxAge: 15 * 60 * 1000 
   }
 }));
-// Middleware para renovar expiración por inactividad
+
 app.use((req, res, next) => {
   if (req.session) {
     req.session.touch();
@@ -117,23 +117,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// Inicializar Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Middleware para exponer la variable de entorno RECAPTCHA_SITE_KEY a todas las vistas EJS
 app.use((req, res, next) => {
   res.locals.RECAPTCHA_SITE_KEY = process.env.RECAPTCHA_SITE_KEY || '';
   next();
 });
 
-// Middleware para exponer la variable de entorno GA_MEASUREMENT_ID a todas las vistas EJS
 app.use((req, res, next) => {
   res.locals.GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || '';
   next();
 });
 
-// Content Security Policy y otros middlewares
+
 app.use((req, res, next) => {
   const csp = [
     "default-src 'self' https://www.gstatic.com https://www.google.com https://www.googletagmanager.com;",
@@ -148,7 +145,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware para proteger rutas
+
 function ensureAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated && req.isAuthenticated()) {
     return next();
@@ -156,27 +153,27 @@ function ensureAuthenticated(req: any, res: any, next: any) {
   res.redirect('/login');
 }
 
-// Rutas de contactos
+
 app.post('/contact/add', ContactsController.add);
 app.get('/admin/contacts', ContactsController.index);
 
-// Rutas de pagos
+
 app.post('/payment/add', PaymentsController.validatePayment(), PaymentsController.add);
 
-// Ruta principal
+
 app.get('/', async (req, res) => {
   let contacts = [];
   let payments = [];
-  // Si el usuario está autenticado y es admin, mostrar datos
+  
   if (req.isAuthenticated && req.isAuthenticated() && req.user && (req.user as any).username === 'admin') {
     contacts = await ContactsModel.getAllContacts();
     payments = await PaymentsModel.getAllPayments();
   }
-  // Pasar el parámetro adminError si viene en la query
+  
   res.render('index', { contacts, payments, user: req.user, adminError: req.query.adminError });
 });
 
-// Rutas de autenticación
+
 app.get('/login', AuthController.showLogin);
 app.post('/login', AuthController.login);
 app.get('/logout', AuthController.logout);
@@ -185,12 +182,12 @@ app.post('/forgot-password', PasswordController.sendResetLink);
 app.get('/reset-password', PasswordController.showResetForm);
 app.post('/reset-password', PasswordController.resetPassword);
 
-// Google OAuth
+
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   async (req, res) => {
-    // Si el usuario autenticado no es admin ni SadHBc por correo, cerrar sesión y mostrar mensaje
+   
     const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
     if (!req.user || !adminEmails.includes((req.user as any).email)) {
       req.logout(() => {
@@ -202,10 +199,10 @@ app.get('/auth/google/callback',
   }
 );
 
-// Rutas protegidas para contactos y pagos
+
 app.get('/contacts', ensureAuthenticated, async (req, res) => {
   const contacts = await ContactsModel.getAllContacts();
-  // Adaptar los datos para la vista
+  
   const contactsView = contacts.map((c: any) => ({
     name: c.name,
     email: c.email,
@@ -220,7 +217,7 @@ app.get('/payments', ensureAuthenticated, async (req, res) => {
   res.render('payments', { payments });
 });
 
-// Dashboard solo para administradores
+
 app.get('/admin/dashboard', ensureAuthenticated, async (req, res) => {
   const adminEmails = ['admin@gmail.com', 'henzo30765082@gmail.com'];
   if (!req.user || !adminEmails.includes((req.user as any).email)) {
