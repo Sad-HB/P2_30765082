@@ -30,6 +30,7 @@ const sqlite_1 = require("sqlite");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const ContactsModel_1 = require("./models/ContactsModel");
 const PaymentsModel_1 = require("./models/PaymentsModel");
+const i18n_1 = __importDefault(require("i18n"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
@@ -131,6 +132,29 @@ app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", csp);
     next();
 });
+i18n_1.default.configure({
+    locales: ['es', 'en'],
+    directory: path_1.default.join(__dirname, '../locales'),
+    defaultLocale: 'es',
+    cookie: 'lang',
+    queryParameter: 'lang',
+    autoReload: true,
+    objectNotation: true
+});
+app.use(i18n_1.default.init);
+// Middleware para cambiar idioma por query o cookie
+app.use((req, res, next) => {
+    var _a;
+    let lang = ((_a = req.cookies) === null || _a === void 0 ? void 0 : _a.lang) || req.query.lang;
+    if (lang && ['es', 'en'].includes(lang)) {
+        i18n_1.default.setLocale(req, lang);
+        i18n_1.default.setLocale(res, lang);
+        res.cookie('lang', lang, { maxAge: 900000, httpOnly: true });
+    }
+    res.locals.__ = i18n_1.default.__.bind(res);
+    res.locals.locale = i18n_1.default.getLocale(req);
+    next();
+});
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated && req.isAuthenticated()) {
         return next();
@@ -188,5 +212,5 @@ app.get('/admin/dashboard', ensureAuthenticated, (req, res) => __awaiter(void 0,
     }
     const contacts = yield ContactsModel_1.ContactsModel.getAllContacts();
     const payments = yield PaymentsModel_1.PaymentsModel.getAllPayments();
-    res.render('admin_dashboard', { contacts, payments, user: req.user });
+    res.render('admin_dashboard', { contacts, payments, user: req.user, request: req });
 }));

@@ -17,7 +17,11 @@ const passport_1 = __importDefault(require("passport"));
 class AuthController {
     static showLogin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            res.render('login', { error: null });
+            // Si hay parámetro lang, guardar cookie manualmente
+            if (req.query.lang && ['es', 'en'].includes(req.query.lang)) {
+                res.cookie('lang', req.query.lang, { maxAge: 900000, httpOnly: true });
+            }
+            res.render('login', { error: null, __: res.locals.__, locale: res.locals.locale, request: req });
         });
     }
     static login(req, res, next) {
@@ -25,8 +29,12 @@ class AuthController {
             passport_1.default.authenticate('local', (err, user, info) => {
                 if (err)
                     return next(err);
-                if (!user)
-                    return res.render('login', { error: info.message });
+                if (!user) {
+                    if (req.query.lang && ['es', 'en'].includes(req.query.lang)) {
+                        res.cookie('lang', req.query.lang, { maxAge: 900000, httpOnly: true });
+                    }
+                    return res.render('login', { error: info.message, __: res.locals.__, locale: res.locals.locale, request: req });
+                }
                 req.logIn(user, (err) => {
                     if (err)
                         return next(err);

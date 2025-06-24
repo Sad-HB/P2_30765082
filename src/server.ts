@@ -16,6 +16,7 @@ import { open } from 'sqlite';
 import bcrypt from 'bcrypt';
 import { ContactsModel } from './models/ContactsModel';
 import { PaymentsModel } from './models/PaymentsModel';
+import i18n from 'i18n';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -146,6 +147,31 @@ app.use((req, res, next) => {
 });
 
 
+i18n.configure({
+  locales: ['es', 'en'],
+  directory: path.join(__dirname, '../locales'),
+  defaultLocale: 'es',
+  cookie: 'lang',
+  queryParameter: 'lang',
+  autoReload: true,
+  objectNotation: true
+});
+app.use(i18n.init);
+
+// Middleware para cambiar idioma por query o cookie
+app.use((req, res, next) => {
+  let lang = req.cookies?.lang || req.query.lang;
+  if (lang && ['es', 'en'].includes(lang)) {
+    i18n.setLocale(req, lang);
+    i18n.setLocale(res, lang);
+    res.cookie('lang', lang, { maxAge: 900000, httpOnly: true });
+  }
+  res.locals.__ = i18n.__.bind(res);
+  res.locals.locale = i18n.getLocale(req);
+  next();
+});
+
+
 function ensureAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated && req.isAuthenticated()) {
     return next();
@@ -225,6 +251,6 @@ app.get('/admin/dashboard', ensureAuthenticated, async (req, res) => {
   }
   const contacts = await ContactsModel.getAllContacts();
   const payments = await PaymentsModel.getAllPayments();
-  res.render('admin_dashboard', { contacts, payments, user: req.user });
+  res.render('admin_dashboard', { contacts, payments, user: req.user, request: req });
 });
 

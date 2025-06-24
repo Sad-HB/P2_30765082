@@ -4,13 +4,22 @@ import { UsersModel } from '../models/UsersModel';
 
 export class AuthController {
   static async showLogin(req: Request, res: Response) {
-    res.render('login', { error: null });
+    // Si hay parámetro lang, guardar cookie manualmente
+    if (req.query.lang && ['es', 'en'].includes(req.query.lang as string)) {
+      res.cookie('lang', req.query.lang, { maxAge: 900000, httpOnly: true });
+    }
+    res.render('login', { error: null, __: res.locals.__, locale: res.locals.locale, request: req });
   }
 
   static async login(req: Request, res: Response, next: NextFunction) {
     passport.authenticate('local', (err: any, user: any, info: any) => {
       if (err) return next(err);
-      if (!user) return res.render('login', { error: info.message });
+      if (!user) {
+        if (req.query.lang && ['es', 'en'].includes(req.query.lang as string)) {
+          res.cookie('lang', req.query.lang, { maxAge: 900000, httpOnly: true });
+        }
+        return res.render('login', { error: info.message, __: res.locals.__, locale: res.locals.locale, request: req });
+      }
       req.logIn(user, (err: any) => {
         if (err) return next(err);
         

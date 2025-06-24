@@ -75,21 +75,28 @@
 <body>
   <header style="display:flex;flex-direction:column;align-items:center;">
     <nav style="width:100%;display:flex;justify-content:flex-end;padding:18px 24px 0 0;box-sizing:border-box;">
-      <a href="/logout" style="display:inline-block;padding:8px 22px;background:#2fd0f5;color:#222;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;">Cerrar sesión</a>
+      <a href="/logout" style="display:inline-block;padding:8px 22px;background:#2fd0f5;color:#222;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;"> <%= __("logout") %> </a>
     </nav>
-    <h1 style="text-align:center;font-size:2.2rem;color:#2fd0f5;margin:18px 0 10px 0;letter-spacing:1px;">Panel de Administración</h1>
-    <a href="/" style="margin-top:10px;display:inline-block;padding:8px 22px;background:#57AAB4;color:#fff;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;">Ir a la página inicial</a>
+    <h1 style="text-align:center;font-size:2.2rem;color:#2fd0f5;margin:18px 0 10px 0;letter-spacing:1px;"><%= __("admin_panel") %></h1>
+    <a href="/" style="margin-top:10px;display:inline-block;padding:8px 22px;background:#57AAB4;color:#fff;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;"><%= __("home") %></a>
+    <form method="get" action="<%= request.originalUrl.split('?')[0] %>" style="margin-top:10px;">
+      <label for="lang" style="color:#fff;font-weight:bold;"><%= __("language") %>:</label>
+      <select name="lang" id="lang" onchange="this.form.submit()" style="margin-left:8px;">
+        <option value="es" <%= locale === 'es' ? 'selected' : '' %>><%= __("spanish") %></option>
+        <option value="en" <%= locale === 'en' ? 'selected' : '' %>><%= __("english") %></option>
+      </select>
+    </form>
   </header>
 
   <section class="admin-section">
     <div class="admin-box">
-      <h2>Contactos Registrados</h2>
+      <h2><%= __('received_contacts') %></h2>
       <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
-        <input type="text" id="searchContactInput" placeholder="Buscar contacto..." class="input-field" style="max-width: 220px; min-width: 120px;" />
+        <input type="text" id="searchContactInput" placeholder="<%= __('search') %>" class="input-field" style="max-width: 220px; min-width: 120px;" />
         <input type="date" id="contactDateFrom" class="input-field" style="max-width: 160px; min-width: 120px;" />
         <input type="date" id="contactDateTo" class="input-field" style="max-width: 160px; min-width: 120px;" />
         <select id="countryFilter" class="input-field" style="max-width: 180px; min-width: 120px;">
-          <option value="">Todos los países</option>
+          <option value=""><%= __('all_countries') %></option>
           <% const countries = [...new Set(contacts.map(c => c.country || ''))]; countries.forEach(c => { if (c) { %>
             <option value="<%= c %>"><%= c %></option>
           <% }}); %>
@@ -99,11 +106,11 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Correo Electrónico</th>
-            <th>Nombres</th>
-            <th>Comentario</th>
+            <th><%= __('email') %></th>
+            <th><%= __('name') %></th>
+            <th><%= __('message') %></th>
             <th>IP</th>
-            <th>Fecha y Hora</th>
+            <th><%= __('date') %></th>
             <th>País</th>
           </tr>
         </thead>
@@ -121,25 +128,25 @@
               </tr>
             <% }); %>
           <% } else { %>
-            <tr><td colspan="7">No hay contactos registrados.</td></tr>
+            <tr><td colspan="7"><%= __('no_contacts') || 'No hay contactos registrados.' %></td></tr>
           <% } %>
         </tbody>
       </table>
     </div>
     <div class="admin-box">
-      <h2>Transacciones de Pagos</h2>
+      <h2><%= __('received_payments') %></h2>
       <div class="filters mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px;">
-        <input type="text" id="searchInput" placeholder="Buscar..." class="input-field" style="max-width: 200px; min-width: 120px;" />
+        <input type="text" id="searchInput" placeholder="<%= __('search') %>" class="input-field" style="max-width: 200px; min-width: 120px;" />
         <input type="date" id="dateFrom" class="input-field" style="max-width: 160px; min-width: 120px;" />
         <input type="date" id="dateTo" class="input-field" style="max-width: 160px; min-width: 120px;" />
         <select id="servicioFilter" class="input-field" style="max-width: 180px; min-width: 120px;">
-          <option value="">Todos los servicios</option>
+          <option value=""><%= __('all_services') || 'Todos los servicios' %></option>
           <% const servicios = [...new Set(payments.map(p => p.servicio || 'General'))]; servicios.forEach(s => { %>
             <option value="<%= s %>"><%= s %></option>
           <% }) %>
         </select>
         <select id="estadoFilter" class="input-field" style="max-width: 180px; min-width: 120px; color: #000;">
-          <option value="">Todos los estados</option>
+          <option value=""><%= __('all_statuses') || 'Todos los estados' %></option>
           <% const estados = [...new Set(payments.map(p => p.estado_pago || 'APROBADO'))]; estados.forEach(e => { %>
             <option value="<%= e %>"><%= e %></option>
           <% }) %>
@@ -149,12 +156,12 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Monto</th>
-            <th>Fecha</th>
-            <th>Servicio</th>
-            <th>Estado de Pago</th>
+            <th><%= __('name') %></th>
+            <th><%= __('email') %></th>
+            <th><%= __('amount') %></th>
+            <th><%= __('date') %></th>
+            <th><%= __('service') || 'Servicio' %></th>
+            <th><%= __('payment_status') || 'Estado de Pago' %></th>
           </tr>
         </thead>
         <tbody id="paymentsTable">
@@ -171,7 +178,7 @@
               </tr>
             <% }); %>
           <% } else { %>
-            <tr><td colspan="7">No hay pagos registrados.</td></tr>
+            <tr><td colspan="7"><%= __('no_payments') || 'No hay pagos registrados.' %></td></tr>
           <% } %>
         </tbody>
       </table>

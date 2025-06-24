@@ -163,28 +163,35 @@
 <body>
   <div class="main-box">
     <div class="form-box">
+      <form method="get" action="<%= request.originalUrl.split('?')[0] %>" style="margin-bottom:10px;text-align:center;">
+        <label for="lang" style="color:#fff;font-weight:bold;"><%= __("language") %>:</label>
+        <select name="lang" id="lang" onchange="this.form.submit()" style="margin-left:8px;">
+          <option value="es" <%= locale === 'es' ? 'selected' : '' %>><%= __("spanish") %></option>
+          <option value="en" <%= locale === 'en' ? 'selected' : '' %>><%= __("english") %></option>
+        </select>
+      </form>
       <div class="button-box">
-        <button class="toggle-btn active" onclick="window.location.href='/login'">Acceso</button>
+        <button class="toggle-btn active" onclick="window.location.href='/login'"> <%= __("login") %> </button>
       </div>
-      <a href="/" style="display:block;text-align:center;margin-bottom:18px;padding:8px 22px;background:#57AAB4;color:#fff;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;">Ir a la página inicial</a>
+      <a href="/" style="display:block;text-align:center;margin-bottom:18px;padding:8px 22px;background:#57AAB4;color:#fff;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;"><%= __("home") %></a>
       <% if (error) { %>
         <div class="error"><%= error %></div>
       <% } %>
       <form action="/login" method="POST" class="input-group">
-        <input type="text" id="username" name="username" class="input-field" placeholder="Usuario" required>
+        <input type="text" id="username" name="username" class="input-field" placeholder="<%= __('email') %>" required>
         <div style="position:relative;">
-          <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required style="padding-right:10px;">
+          <input type="password" id="password" name="password" class="input-field" placeholder="<%= __('password') %>" required style="padding-right:10px;">
           <button type="button" id="togglePassword" tabindex="-1" style="position: absolute; right: 10px; border: 5px solid white;border-radius: 50%; background: rgb(255, 255, 255);">
             <i id="eyeIcon" class="fa fa-eye" aria-hidden="true"></i>
           </button>
         </div>
-        <button type="submit" class="submit-btn">Acceso</button>
+        <button type="submit" class="submit-btn"><%= __("login") %></button>
       </form>
       <form action="/auth/google" method="GET" style="margin-top: 16px;">
-        <button type="submit" class="submit-btn" style="background:#232323;color:#2fd0f5;box-shadow:none;">Iniciar con Google</button>
+        <button type="submit" class="submit-btn" style="background:#232323;color:#2fd0f5;box-shadow:none;"><%= __("login_with_google") || 'Iniciar con Google' %></button>
       </form>
       <div style="text-align:center;margin-top:18px;">
-        <a href="/forgot-password" style="color:#2fd0f5;text-decoration:underline;font-size:15px;">¿Olvidaste tu contraseña?</a>
+        <a href="/forgot-password" style="color:#2fd0f5;text-decoration:underline;font-size:15px;"><%= __("forgot_password") %></a>
       </div>
     </div>
   </div>
