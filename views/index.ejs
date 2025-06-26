@@ -78,10 +78,21 @@
     </section>
     <section id="galeria">
         <h2><%= __('gallery_title') %></h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-            <img src="/images/bike1.jpg" alt="Bicicleta Eléctrica" style="max-width: 100%; width: 300px; border-radius: 8px;">
-            <img src="/images/scooter1.jpg" alt="Scooter Urbano" style="max-width: 100%; width: 300px; border-radius: 8px;">
-            <img src="/images/bici.jpg" alt="Bicicleta de la ciudad" style="max-width: 100%; width: 300px; border-radius: 8px;">
+        <div class="gallery-slider" style="overflow:hidden;max-width:100%;">
+            <div class="gallery-track">
+                <div class="gallery-item">
+                    <div class="gallery-caption"><%= __('gallery_bike_electric') %></div>
+                    <img src="/images/bike1.jpg" alt="<%= __('gallery_bike_electric') %>" style="width:300px; border-radius:8px; margin:0 10px;">
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-caption"><%= __('gallery_scooter_urban') %></div>
+                    <img src="/images/scooter1.jpg" alt="<%= __('gallery_scooter_urban') %>" style="width:300px; border-radius:8px; margin:0 10px;">
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-caption"><%= __('gallery_bike_city') %></div>
+                    <img src="/images/bici.jpg" alt="<%= __('gallery_bike_city') %>" style="width:300px; border-radius:8px; margin:0 10px;">
+                </div>
+            </div>
         </div>
     </section>
 
@@ -276,6 +287,45 @@ form label {
 form textarea {
     resize: none;
 }
+.gallery-slider {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    margin: 0 auto 18px auto;
+    background: transparent;
+}
+.gallery-track {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    animation: gallery-move 12s linear infinite;
+}
+.gallery-track img {
+    flex-shrink: 0;
+    height: 200px;
+    object-fit: cover;
+    box-shadow: 0 2px 12px #0005;
+    background: #fff;
+}
+.gallery-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px;
+}
+.gallery-caption {
+    color: #2fd0f5;
+    font-weight: bold;
+    font-size: 1.08rem;
+    margin-bottom: 6px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+@keyframes gallery-move {
+    0% { transform: translateX(0); }
+    90% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+}
 @media (max-width: 700px) {
     section {
         max-width: 98vw;
@@ -298,7 +348,7 @@ contactForm.addEventListener('submit', async function (event) {
 
     const recaptchaResponse = grecaptcha.getResponse();
     if (!recaptchaResponse) {
-        confirmationMessage.innerHTML = `<div style="background:#fff0f0;border:2px solid #dc3545;color:#b02a37;border-radius:10px;padding:18px 10px;line-height:1.5;font-size:18px;text-align:center;max-width:420px;margin:0 auto;">❌ <b>Por favor, confirma el reCAPTCHA antes de enviar el formulario.</b></div>`;
+        confirmationMessage.innerHTML = `<div style="background:#fff0f0;border:2px solid #dc3545;color:#b02a37;border-radius:10px;padding:18px 10px;line-height:1.5;font-size:18px;text-align:center;max-width:420px;margin:0 auto;">❌ <b><%= __('recaptcha_confirm') %></b></div>`;
         confirmationMessage.style.display = 'block';
         return;
     }
@@ -456,6 +506,16 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // Duplicar imágenes para efecto de ciclo infinito
+    const track = document.querySelector('.gallery-track');
+    if (track) {
+        const items = Array.from(track.children);
+        items.forEach(item => {
+            const clone = item.cloneNode(true);
+            track.appendChild(clone);
+        });
+    }
 });
 </script>
 

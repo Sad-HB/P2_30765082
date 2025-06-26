@@ -74,5 +74,11 @@
 	"contact_us": "Contact Us",
 	"follow_us": "Follow us on our social networks:",
 	"all_rights_reserved": "All rights reserved.",
-	"gallery_title": "Gallery Title"
+	"gallery_title": "Gallery Title",
+	"gallery_bike_electric": "Electric Bike",
+	"gallery_scooter_urban": "Urban Scooter",
+	"gallery_bike_city": "City Bike",
+	"recaptcha_confirm": "Please confirm the reCAPTCHA before submitting the form.",
+	"payment_validation_error": "Payment validation error:",
+	"payment_invalid_value": "Invalid value (field: %{field})"
 }

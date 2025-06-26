@@ -74,5 +74,11 @@
 	"contact_us": "Contáctanos",
 	"follow_us": "Síguenos en nuestras redes sociales:",
 	"all_rights_reserved": "Todos los derechos reservados.",
-	"gallery_title": "Galería de imágenes"
+	"gallery_title": "Galería de imágenes",
+	"gallery_bike_electric": "Bicicleta Eléctrica",
+	"gallery_scooter_urban": "Scooter Urbano",
+	"gallery_bike_city": "Bicicleta de la ciudad",
+	"recaptcha_confirm": "Por favor, confirma el reCAPTCHA antes de enviar el formulario.",
+	"payment_validation_error": "Error de validación en el pago:",
+	"payment_invalid_value": "Valor inválido (campo: %{field})"
 }
