@@ -28,16 +28,23 @@
 </head>
 <body>
     <header>
-        <h1>Alquiler de Bicicletas Eléctricas y Scooters Urbanos</h1>
+        <h1><%= __('site_title') %></h1>
+        <form method="get" action="/" style="margin:10px 18px 0 0;float:right;">
+            <label for="lang" style="color:#2fd0f5;font-weight:bold;"><%= __('language') %>:</label>
+            <select name="lang" id="lang" onchange="this.form.submit()" style="margin-left:8px;">
+                <option value="es" <%= locale === 'es' ? 'selected' : '' %>><%= __('spanish') %></option>
+                <option value="en" <%= locale === 'en' ? 'selected' : '' %>><%= __('english') %></option>
+            </select>
+        </form>
         <nav>
-            <ul>
-                <li><a href="#descripcion"><i class="fas fa-info-circle"></i> Descripción</a></li>
-                <li><a href="#beneficios"><i class="fas fa-star"></i> Beneficios</a></li>
-                <li><a href="#galeria"><i class="fas fa-images"></i> Galería</a></li>
-                <li><a href="#contact-form"><i class="fas fa-envelope"></i> Contacto</a></li>
-                <li><a href="#payment-form"><i class="fas fa-credit-card"></i> Pago</a></li>
-                <li><a href="#contacto"><i class="fas fa-share-alt"></i> Redes Sociales</a></li>
-                 <li><a href="/login">Iniciar Sesión</a></li>
+            <ul style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;">
+                <li><a href="#descripcion" style="display:flex;align-items:center;"><span style="font-size:1.6em;margin-right:6px;">📝</span><i class="fas fa-info-circle"></i> <%= __('description') %></a></li>
+                <li><a href="#beneficios" style="display:flex;align-items:center;"><span style="font-size:1.6em;margin-right:6px;">🌱</span><i class="fas fa-star"></i> <%= __('benefits') %></a></li>
+                <li><a href="#galeria" style="display:flex;align-items:center;"><span style="font-size:1.6em;margin-right:6px;">📸</span><i class="fas fa-images"></i> <%= __('gallery') %></a></li>
+                <li><a href="#contact-form" style="display:flex;align-items:center;"><span style="font-size:1.6em;margin-right:6px;">✉️</span><i class="fas fa-envelope"></i> <%= __('contact') %></a></li>
+                <li><a href="#payment-form" style="display:flex;align-items:center;"><span style="font-size:1.6em;margin-right:6px;">💳</span><i class="fas fa-credit-card"></i> <%= __('payment') %></a></li>
+                <li><a href="#contacto" style="display:flex;align-items:center;"><span style="font-size:1.6em;margin-right:6px;">🌐</span><i class="fas fa-share-alt"></i> <%= __('social_networks') %></a></li>
+                <li><a href="/login" style="display:flex;align-items:center;"><span style="font-size:1.6em;margin-right:6px;">🔑</span><%= __('login') %></a></li>
             </ul>
         </nav>
     </header>
@@ -56,82 +63,89 @@
       </script>
     <% } %>
     <section id="descripcion">
-        <h2>Descripción del Servicio</h2>
-        <p>Ofrecemos un servicio de alquiler de <em>bicicletas eléctricas</em> y <em>scooters urbanos</em> para que disfrutes de la ciudad de manera <strong>sostenible</strong> y <strong>divertida</strong>. Nuestros vehículos son fáciles de usar y están disponibles en varias ubicaciones estratégicas.</p>
+        <h2><%= __('service_description_title') %></h2>
+        <p><%= __('service_description_text') %></p>
     </section>
 
     <section id="beneficios">
-        <h2>Beneficios y Ventajas</h2>
+        <h2><%= __('benefits_title') %></h2>
         <ul>
-            <li><strong>Movilidad rápida y eficiente.</strong></li>
-            <li><strong>Reduce la huella de carbono.</strong></li>
-            <li><strong>Fácil acceso y disponibilidad en toda la ciudad.</strong></li>
-            <li><strong>Precios competitivos y opciones de suscripción.</strong></li>
+            <li><strong><%= __('benefit_fast') %></strong></li>
+            <li><strong><%= __('benefit_carbon') %></strong></li>
+            <li><strong><%= __('benefit_access') %></strong></li>
+            <li><strong><%= __('benefit_price') %></strong></li>
         </ul>
     </section>
-
+    <section id="galeria">
+        <h2><%= __('gallery_title') %></h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+            <img src="/images/bike1.jpg" alt="Bicicleta Eléctrica" style="max-width: 100%; width: 300px; border-radius: 8px;">
+            <img src="/images/scooter1.jpg" alt="Scooter Urbano" style="max-width: 100%; width: 300px; border-radius: 8px;">
+            <img src="/images/bici.jpg" alt="Bicicleta de la ciudad" style="max-width: 100%; width: 300px; border-radius: 8px;">
+        </div>
+    </section>
 
     <section id="contact-form">
-        <h2>Formulario de Contacto</h2>
+        <h2><%= __('contact_form_title') %></h2>
         <form action="/contact/add" method="POST">
-            <label for="email">Correo Electrónico:</label>
+            <label for="email"><%= __('email') %>:</label>
             <input type="email" id="email" name="email" required>
 
-            <label for="name">Nombres:</label>
+            <label for="name"><%= __('names') %>:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="comment">Comentario:</label>
+            <label for="comment"><%= __('comment') %>:</label>
             <textarea id="comment" name="comment"></textarea>
 
             <div class="g-recaptcha" data-sitekey="<%= RECAPTCHA_SITE_KEY %>"></div>
-            <button type="submit" class="glow-on-hover">Enviar</button>
+            <button type="submit" class="glow-on-hover"><%= __('send') %></button>
         </form>
 
      
     <div id="contact-confirmation-message" style="display: none; text-align: center; margin-top: 20px;">
-        <p style="font-size: 18px; color: #007BFF;">¡Formulario de contacto enviado correctamente!</p>
+        <p style="font-size: 18px; color: #007BFF;"><%= __('contact_form_success') %></p>
     </div>
 
     <section id="payment-form">
-        <h2>Formulario de Pago</h2>
+        <h2><%= __('payment_form_title') %></h2>
         <form id="paymentForm" action="/payment/add" method="POST">
-            <label for="email">Correo Electrónico:</label>
+            <label for="email"><%= __('email') %>:</label>
             <input type="email" id="paymentEmail" name="email" required>
 
-            <label for="cardholderName">Nombre del Titular de la Tarjeta:</label>
+            <label for="cardholderName"><%= __('cardholder_name') %>:</label>
             <input type="text" id="cardholderName" name="cardholderName" required>
 
-            <label for="cardNumber">Número de Tarjeta:</label>
-            <input type="text" id="cardNumber" name="cardNumber" pattern="^\d{13,19}$" title="El número de tarjeta debe contener entre 13 y 19 dígitos." required>
+            <label for="cardNumber"><%= __('card_number') %>:</label>
+            <input type="text" id="cardNumber" name="cardNumber" pattern="^\d{13,19}$" title="<%= __('card_number_title') %>" required>
 
-            <label for="expiryMonth">Mes de Expiración:</label>
+            <label for="expiryMonth"><%= __('expiry_month') %>:</label>
             <input type="number" id="expiryMonth" name="expiryMonth" min="1" max="12" required>
 
-            <label for="expiryYear">Año de Expiración:</label>
+            <label for="expiryYear"><%= __('expiry_year') %>:</label>
             <input type="number" id="expiryYear" name="expiryYear" min="2025" required>
 
-            <label for="cvv">Código de Seguridad (CVV):</label>
-            <input type="text" id="cvv" name="cvv" pattern="^\d{3,4}$" title="El CVV debe contener 3 o 4 dígitos." required>
+            <label for="cvv"><%= __('cvv') %>:</label>
+            <input type="text" id="cvv" name="cvv" pattern="^\d{3,4}$" title="<%= __('cvv_title') %>" required>
 
-            <label for="amount">Monto a Pagar:</label>
-            <input type="number" id="amount" name="amount" min="1000" step="10" title="El monto debe ser un número positivo." required>
+            <label for="amount"><%= __('amount_to_pay') %>:</label>
+            <input type="number" id="amount" name="amount" min="1000" step="10" title="<%= __('amount_title') %>" required>
 
-            <label for="currency">Moneda:</label>
+            <label for="currency"><%= __('currency') %>:</label>
             <select id="currency" name="currency" required>
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="MXN">MXN</option>
             </select>
 
-            <label for="servicio">Servicio:</label>
+            <label for="servicio"><%= __('service') %>:</label>
             <select id="servicio" name="servicio" required>
-                <option value="Bicicleta eléctrica">Bicicleta eléctrica</option>
-                <option value="Scooter urbano">Scooter urbano</option>
-                <option value="Accesorio">Accesorio</option>
-                <option value="Otro">Otro</option>
+                <option value="Bicicleta eléctrica"><%= __('electric_bike') %></option>
+                <option value="Scooter urbano"><%= __('urban_scooter') %></option>
+                <option value="Accesorio"><%= __('accessory') %></option>
+                <option value="Otro"><%= __('other') %></option>
             </select>
 
-            <button type="submit" class="glow-on-hover">Pagar</button>
+            <button type="submit" class="glow-on-hover"><%= __('pay') %></button>
         </form>
         <div id="payment-message" style="display:none; margin: 25px auto 0 auto; max-width: 420px; padding: 18px 24px; border-radius: 12px; font-size: 18px; font-weight: 500; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.07);"></div>
     </section>
@@ -139,8 +153,8 @@
    
 
     <section id="contacto">
-        <h2>Contáctanos</h2>
-        <p>Síguenos en nuestras redes sociales:</p>
+        <h2><%= __('contact_us') %></h2>
+        <p><%= __('follow_us') %></p>
         <a href="https://www.facebook.com/ehenzo.bretpo" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
         <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
         <a href="https://www.instagram.com/sad_h.b?igsh=YzljYTk1ODg3Zg==" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
@@ -148,7 +162,7 @@
 
 
     <footer>
-        <p>&copy; 2025 Alquiler de Bicicletas Eléctricas y Scooters Urbanos. Todos los derechos reservados.</p>
+        <p>&copy; 2025 <%= __('site_title') %>. <%= __('all_rights_reserved') %></p>
     </footer>
 <style>
 body{
@@ -405,15 +419,42 @@ function showContactPreview(event) {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
+    // Localización de fechas en la tabla de contactos
     const dateCells = document.querySelectorAll('#contact-list tbody tr td:nth-child(6)');
     dateCells.forEach(cell => {
         const raw = cell.textContent;
         if (!raw || raw === 'Fecha y Hora') return;
         const date = new Date(raw);
         if (!isNaN(date.getTime())) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-            cell.textContent = date.toLocaleString('es-ES', options);
+            let locale = '<%= locale %>';
+            let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+            if (locale === 'en') {
+                options = { ...options, hour12: true };
+                cell.textContent = date.toLocaleString('en-US', options);
+            } else {
+                options = { ...options, hour12: false };
+                cell.textContent = date.toLocaleString('es-VE', options);
+            }
         }
+    });
+
+    // Localización de montos en formularios y mensajes
+    const amountInputs = document.querySelectorAll('input[name="amount"]');
+    amountInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            let value = parseFloat(input.value);
+            if (!isNaN(value)) {
+                let locale = '<%= locale %>';
+                let currency = document.getElementById('currency')?.value || (locale === 'en' ? 'USD' : 'VES');
+                let formatted = value.toLocaleString(locale === 'en' ? 'en-US' : 'es-VE', {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: 2
+                });
+                document.getElementById('amount').value = value;
+                document.getElementById('amount').setAttribute('data-formatted', formatted);
+            }
+        });
     });
 });
 </script>
@@ -427,6 +468,6 @@ window.addEventListener('DOMContentLoaded', function () {
   gtag('config', '<%= GA_MEASUREMENT_ID %>');
 </script>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?hl=<%= locale %>" async defer></script>
 </body>
 </html>

@@ -109,9 +109,9 @@
             <th><%= __('email') %></th>
             <th><%= __('name') %></th>
             <th><%= __('message') %></th>
-            <th>IP</th>
+            <th><%= __('ip') || 'IP' %></th>
             <th><%= __('date') %></th>
-            <th>País</th>
+            <th><%= __('country') || 'País' %></th>
           </tr>
         </thead>
         <tbody id="contactsTable">
@@ -123,7 +123,7 @@
                 <td><%= contact.name %></td>
                 <td><%= contact.comment %></td>
                 <td><%= contact.ip %></td>
-                <td><%= contact.timestamp %></td>
+                <td class="contact-date"><%= contact.timestamp %></td>
                 <td><%= contact.country %></td>
               </tr>
             <% }); %>
@@ -171,8 +171,8 @@
                 <td><%= payment.id %></td>
                 <td><%= payment.name %></td>
                 <td><%= payment.email %></td>
-                <td><%= payment.amount %></td>
-                <td><%= payment.created_at %></td>
+                <td class="payment-amount"><%= payment.amount %></td>
+                <td class="payment-date"><%= payment.created_at %></td>
                 <td><%= payment.servicio || 'General' %></td>
                 <td><%= payment.estado_pago || 'APROBADO' %></td>
               </tr>
@@ -233,6 +233,40 @@
     document.getElementById('dateTo').addEventListener('change', filterPayments);
     document.getElementById('servicioFilter').addEventListener('change', filterPayments);
     document.getElementById('estadoFilter').addEventListener('change', filterPayments);
+
+    // Localize contact dates
+    (function() {
+      const locale = '<%= locale %>';
+      document.querySelectorAll('.contact-date').forEach(td => {
+        const raw = td.textContent;
+        if (raw && !isNaN(Date.parse(raw))) {
+          const date = new Date(raw);
+          td.textContent = date.toLocaleString(locale === 'es' ? 'es-ES' : 'en-US', {
+            year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'
+          });
+        }
+      });
+      // Localize payment dates
+      document.querySelectorAll('.payment-date').forEach(td => {
+        const raw = td.textContent;
+        if (raw && !isNaN(Date.parse(raw))) {
+          const date = new Date(raw);
+          td.textContent = date.toLocaleString(locale === 'es' ? 'es-ES' : 'en-US', {
+            year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'
+          });
+        }
+      });
+      // Localize payment amounts
+      document.querySelectorAll('.payment-amount').forEach(td => {
+        const raw = td.textContent;
+        const num = parseFloat(raw.replace(/[^\d.-]/g, ''));
+        if (!isNaN(num)) {
+          td.textContent = num.toLocaleString(locale === 'es' ? 'es-VE' : 'en-US', {
+            style: 'currency', currency: locale === 'es' ? 'VES' : 'USD', minimumFractionDigits: 2
+          });
+        }
+      });
+    })();
   </script>
 </body>
 </html>

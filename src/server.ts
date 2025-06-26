@@ -254,3 +254,5 @@ app.get('/admin/dashboard', ensureAuthenticated, async (req, res) => {
   res.render('admin_dashboard', { contacts, payments, user: req.user, request: req });
 });
 
+app.use('/images', express.static(path.join(__dirname, '../images')));
+

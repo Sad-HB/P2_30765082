@@ -214,3 +214,4 @@ app.get('/admin/dashboard', ensureAuthenticated, (req, res) => __awaiter(void 0,
     const payments = yield PaymentsModel_1.PaymentsModel.getAllPayments();
     res.render('admin_dashboard', { contacts, payments, user: req.user, request: req });
 }));
+app.use('/images', express_1.default.static(path_1.default.join(__dirname, '../images')));
