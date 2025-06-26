@@ -55,6 +55,7 @@
 	"comment": "Comentario",
 	"send": "Enviar",
 	"contact_form_success": "¡Formulario de contacto enviado correctamente!",
+	"contact_form_error": "Error al enviar el formulario",
 	"payment_form_title": "Formulario de Pago",
 	"cardholder_name": "Nombre del Titular de la Tarjeta",
 	"card_number": "Número de Tarjeta",

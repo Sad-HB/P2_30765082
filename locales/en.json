@@ -55,6 +55,7 @@
 	"comment": "Comment",
 	"send": "Send",
 	"contact_form_success": "Contact form sent successfully!",
+	"contact_form_error": "Error sending the form",
 	"payment_form_title": "Payment Form",
 	"cardholder_name": "Cardholder Name",
 	"card_number": "Card Number",
