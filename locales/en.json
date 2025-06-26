@@ -81,5 +81,7 @@
 	"gallery_bike_city": "City Bike",
 	"recaptcha_confirm": "Please confirm the reCAPTCHA before submitting the form.",
 	"payment_validation_error": "Payment validation error:",
-	"payment_invalid_value": "Invalid value (field: %{field})"
+	"payment_invalid_value": "Invalid value (field: %{field})",
+	"payment_success": "Your payment has been accepted!",
+	"transaction_id": "Transaction ID"
 }

@@ -413,9 +413,9 @@ paymentForm.addEventListener('submit', async function(event) {
         let icon = '✔️';
         let msg = '';
         if (result.success) {
-            msg = `${icon} <b>¡Su pago ha sido aceptado!</b>`;
+            msg = `${icon} <b><%= __('payment_success') %></b>`;
             if (result.data && result.data.transaction_id) {
-                msg += `<br><span style='font-size:15px;color:#555;'>ID Transacción: <b>${result.data.transaction_id}</b></span>`;
+                msg += `<br><span style='font-size:15px;color:#555;'><%= __('transaction_id') %>: <b>${result.data.transaction_id}</b></span>`;
             }
         } else {
             bg = '#fff0f0';
